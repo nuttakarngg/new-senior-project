@@ -13,3 +13,7 @@ body{
     background-position: center;
     background-blend-mode: multiply;
 }
+
+.border-azure{
+    border-color: #4299e15b !important;
+}

@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 function Navbar() {
-  let  navbar = useSelector(state=>state.navbar)||[];
+  let navbar = useSelector((state) => state.navbar) || [];
   return (
     <div className="navbar-expand-md">
       <div className="collapse navbar-collapse" id="navbar-menu">
         <div className="navbar navbar-light">
           <div className="container-xl">
             <ul className="navbar-nav">
-              <li className={"nav-item "+(navbar[0]==='/HomePage'?'active':'')}>
+              <li
+                className={
+                  "nav-item " + (navbar[0] === "/HomePage" ? "active" : "")
+                }
+              >
                 <Link className="nav-link " to="/">
                   <span className="nav-link-icon d-md-none d-lg-inline-block">
                     <svg
@@ -32,7 +36,12 @@ function Navbar() {
                   <span className="nav-link-title">หน้าแรก</span>
                 </Link>
               </li>
-              <li className={"nav-item dropdown "+(navbar[0]==="/Database"?'active':'')}>
+              <li
+                className={
+                  "nav-item dropdown " +
+                  (navbar[0] === "/Database" ? "active" : "")
+                }
+              >
                 <a
                   className="nav-link dropdown-toggle"
                   href="#navbar-base"
@@ -48,15 +57,24 @@ function Navbar() {
                 <div className="dropdown-menu">
                   <div className="dropdown-menu-columns">
                     <div className="dropdown-menu-column">
-                      <Link className={"dropdown-item "+(navbar[1]==="/Search"?'active':'')} to="/Database/Search">
+                      <Link
+                        className={
+                          "dropdown-item " +
+                          (navbar[1] === "/SearchByResearcher" ? "active" : "")
+                        }
+                        to="/Database/SearchByResearcher"
+                      >
                         ค้นหาผู้เชี่ยวชาญ
                       </Link>
-                      <a
-                        className="dropdown-item"
-                        href="/"
+                      <Link
+                        className={
+                          "dropdown-item " +
+                          (navbar[1] === "/SearchByResearch" ? "active" : "")
+                        }
+                        to="/Database/SearchByResearch"
                       >
                         ค้นหางานวิจัย
-                      </a>
+                      </Link>
                       <a
                         className="dropdown-item"
                         target="_blank"

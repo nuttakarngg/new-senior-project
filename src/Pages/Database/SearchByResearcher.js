@@ -6,7 +6,7 @@ export default function Search() {
   useEffect(() => {
     dispatch({
       type: "SET_DATA",
-      payload: { navbar: ["/Database", "/Search"] },
+      payload: { navbar: ["/Database", "/SearchByResearcher"] },
     });
   });
   return (
@@ -20,15 +20,19 @@ export default function Search() {
       </div>
       <div className="row justify-content-around">
         <div className="col-md-3 col-sm-12 my-3">
-          <div className="card h-100 animate__animated animate__fadeIn">
+          <div className="card animate__animated animate__fadeIn">
             <div className="card-header bg-primary">
               <span className="text-white">ตัวกรองข้อมูล</span>
             </div>
             <div className="card-body">
-              <div>
-                <label className="form-label">คีย์เวิร์ด</label>
+              <label className="form-label">คีย์เวิร์ด</label>
+              <div className="input-group">
                 <input type="text" className="form-control"></input>
+                <button className="btn btn-outline-secondary" type="button">
+                  <i className="fas fa-search" />
+                </button>
               </div>
+              <small>*ชื่อ-นามสกุล, หน่วยงาน</small>
             </div>
           </div>
         </div>
@@ -41,7 +45,7 @@ export default function Search() {
               <div className="row px-5">
                 <div className="col-md-6">
                   <p>
-                    <b>ปีงบประมาณ</b> 2574
+                    <b>เบอร์โทร</b> 0861350XXX
                   </p>
                   <p>
                     <b>ตำแหน่งทางวิชาการ</b> ผู้ช่วยศาสตราจารย์
@@ -52,9 +56,6 @@ export default function Search() {
                 </div>
                 <div className="col-md-6">
                   <p>
-                    <b>เบอร์โทร</b> 0861350XXX
-                  </p>
-                  <p>
                     <b>อีเมล</b> pond064@hotmail.com
                   </p>
                   <p>
@@ -64,10 +65,9 @@ export default function Search() {
                 </div>
               </div>
             </div>
-
             <button
               type="button"
-              className="btn btn-outline-azure btn-sm card-footer"
+              className="btn btn-outline-azure btn-sm card-footer border-azure"
             >
               ข้อมูลเพิ่มเติม
             </button>
@@ -80,7 +80,7 @@ export default function Search() {
               <div className="row px-5">
                 <div className="col-md-6">
                   <p>
-                    <b>ปีงบประมาณ</b> 2574{" "}
+                    <b>เบอร์โทร</b> 0861350XXX
                   </p>
                   <p>
                     <b>ตำแหน่งทางวิชาการ</b> ผู้ช่วยศาสตราจารย์
@@ -91,9 +91,6 @@ export default function Search() {
                 </div>
                 <div className="col-md-6">
                   <p>
-                    <b>เบอร์โทร</b> 0861350XXX
-                  </p>
-                  <p>
                     <b>อีเมล</b> pond064@hotmail.com
                   </p>
                   <p>
@@ -103,10 +100,9 @@ export default function Search() {
                 </div>
               </div>
             </div>
-
             <button
               type="button"
-              className="btn btn-outline-azure btn-sm card-footer"
+              className="btn btn-outline-azure btn-sm card-footer border-azure"
             >
               ข้อมูลเพิ่มเติม
             </button>
@@ -119,7 +115,7 @@ export default function Search() {
               <div className="row px-5">
                 <div className="col-md-6">
                   <p>
-                    <b>ปีงบประมาณ</b> 2574{" "}
+                    <b>เบอร์โทร</b> 0861350XXX
                   </p>
                   <p>
                     <b>ตำแหน่งทางวิชาการ</b> ผู้ช่วยศาสตราจารย์
@@ -130,9 +126,6 @@ export default function Search() {
                 </div>
                 <div className="col-md-6">
                   <p>
-                    <b>เบอร์โทร</b> 0861350XXX
-                  </p>
-                  <p>
                     <b>อีเมล</b> pond064@hotmail.com
                   </p>
                   <p>
@@ -142,10 +135,9 @@ export default function Search() {
                 </div>
               </div>
             </div>
-
             <button
               type="button"
-              className="btn btn-outline-azure btn-sm card-footer"
+              className="btn btn-outline-azure btn-sm card-footer border-azure"
             >
               ข้อมูลเพิ่มเติม
             </button>
@@ -158,7 +150,7 @@ export default function Search() {
               <div className="row px-5">
                 <div className="col-md-6">
                   <p>
-                    <b>ปีงบประมาณ</b> 2574{" "}
+                    <b>เบอร์โทร</b> 0861350XXX
                   </p>
                   <p>
                     <b>ตำแหน่งทางวิชาการ</b> ผู้ช่วยศาสตราจารย์
@@ -169,9 +161,6 @@ export default function Search() {
                 </div>
                 <div className="col-md-6">
                   <p>
-                    <b>เบอร์โทร</b> 0861350XXX
-                  </p>
-                  <p>
                     <b>อีเมล</b> pond064@hotmail.com
                   </p>
                   <p>
@@ -181,10 +170,9 @@ export default function Search() {
                 </div>
               </div>
             </div>
-
             <button
               type="button"
-              className="btn btn-outline-azure btn-sm card-footer"
+              className="btn btn-outline-azure btn-sm card-footer border-azure"
             >
               ข้อมูลเพิ่มเติม
             </button>
