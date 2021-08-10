@@ -7,6 +7,7 @@ import { useEffect } from "react";
 export default function HomePage() {
   const dispatch = useDispatch();
   useEffect(()=>{
+    localStorage.setItem('isLogin',JSON.stringify(null));
     dispatch({type:'SET_DATA',payload:{navbar:['/HomePage']}})
   })
   return (

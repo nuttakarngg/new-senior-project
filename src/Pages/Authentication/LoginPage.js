@@ -88,6 +88,10 @@ export default function LoginPage() {
                             <button
                               type="submit"
                               className="btn btn-primary px-4 float-end mt-4"
+                              onClick={()=>{
+                                localStorage.setItem('isLogin',true);
+                                window.location = '/getAll'
+                              }}
                             >
                               เข้าสู่ระบบ
                             </button>
