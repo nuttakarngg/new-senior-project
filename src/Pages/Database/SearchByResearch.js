@@ -74,7 +74,6 @@ export default function Search() {
     });
   });
   useEffect(() => {
-    console.log(filterState);
     if (filterState.startYear > filterState.endYear) {
       const tempStartYear = filterState.startYear;
       const tempEndYear = filterState.endYear;
