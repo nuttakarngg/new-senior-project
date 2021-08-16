@@ -7,7 +7,6 @@ import { useEffect } from "react";
 export default function HomePage() {
   const dispatch = useDispatch();
   useEffect(()=>{
-    localStorage.setItem('isLogin',JSON.stringify(null));
     dispatch({type:'SET_DATA',payload:{navbar:['/HomePage']}})
   })
   return (
@@ -48,7 +47,7 @@ export default function HomePage() {
                 เพื่อสนับสนุนการเลือกผู้เชี่ยวชาญในการจัดทำงานวิจัย
               </p>
               <div className="empty-action">
-                <Link to="/Database/Search" className="btn btn-primary">
+                <Link to="/Database/SearchByResearcher" className="btn btn-primary">
                   <i className="fas fa-search me-2" />
                   สืบค้นทันที
                 </Link>
@@ -68,10 +67,10 @@ export default function HomePage() {
                 เพื่อสนับสนุนการเลือกผู้จัดทำงานวิจัยโดยรับคำแนะนำจากระบบ
               </p>
               <div className="empty-action">
-                <a href="./." className="btn btn-primary">
+                <Link to="/Database/SearchByResearcher" className="btn btn-primary">
                   <i className="fas fa-user-tag me-2" />
                   เริ่มแนะนำทันที
-                </a>
+                </Link>
               </div>
             </div>
           </div>

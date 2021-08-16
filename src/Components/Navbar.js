@@ -87,7 +87,10 @@ function Navbar() {
                   </div>
                 </div>
               </li>
-              <li className="nav-item dropdown">
+              <li className={
+                  "nav-item dropdown " +
+                  (navbar[0] === "/Presents" ? "active" : "")
+                } >
                 <a
                   className="nav-link dropdown-toggle"
                   href="#navbar-base"
@@ -103,12 +106,18 @@ function Navbar() {
                 <div className="dropdown-menu">
                   <div className="dropdown-menu-columns">
                     <div className="dropdown-menu-column">
-                      <a className="dropdown-item" href="/">
+                      <Link className={
+                          "dropdown-item " +
+                          (navbar[1] === "/Dashboard" ? "active" : "")
+                        } to="/Presents/Dashboard">
                         กระดานข้อมูล
-                      </a>
-                      <a className="dropdown-item" href="/">
+                      </Link>
+                      <Link className={
+                          "dropdown-item " +
+                          (navbar[1] === "/RankingPerYear" ? "active" : "")
+                        } to="/Presents/RankingPerYear">
                         อันดับงบประมาณรายได้ต่อปี
-                      </a>
+                      </Link>
                       <a className="dropdown-item" href="/">
                         แนวโน้มของงบประมาณ
                       </a>
@@ -171,7 +180,6 @@ function Navbar() {
                     type="text"
                     className="form-control"
                     placeholder="Search…"
-                    aria-label="Search in website"
                   />
                 </div>
               </form>

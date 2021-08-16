@@ -4,6 +4,8 @@ import LoginPage from "../Pages/Authentication/LoginPage";
 import ForgotPassword from "../Pages/Authentication/ForgotPassword";
 import SearchByResearcher from "../Pages/Database/SearchByResearcher";
 import SearchByResearch from "../Pages/Database/SearchByResearch";
+import Dashboard from "../Pages/Presents/Dashboard";
+import RankingPerYear from "../Pages/Presents/RankingPerYear";
 function PrivateRoute({ children }) {
   return JSON.parse(localStorage.getItem('isLogin')) !== null?children:<Redirect to="/login"/>
 }
@@ -25,7 +27,9 @@ function AppRouting() {
       <Route path="/Database/SearchByResearch">
         <SearchByResearch />
       </Route>
-      <PrivateRoute path="/getAll"><SearchByResearch/></PrivateRoute>
+      <Route path="/Presents/Dashboard"><Dashboard/></Route>
+      <Route path="/Presents/RankingPerYear"><RankingPerYear/></Route>
+      {/* <PrivateRoute path="/getAll"><SearchByResearch/></PrivateRoute> */}
     </Switch>
   );
 }

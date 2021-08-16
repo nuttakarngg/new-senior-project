@@ -53,7 +53,7 @@ export default function Search() {
     });
   });
   useEffect(() => {
-    console.log(filterState);
+    // console.log(filterState);
   }, [filterState]);
   // End UseEffect
   return (
