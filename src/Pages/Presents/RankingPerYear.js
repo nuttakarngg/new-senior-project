@@ -140,7 +140,7 @@ export default function Dashboard() {
         <div className="col-xl-12">
           <div className="row justify-content-around">
             <div className="col-xl-3 col-sm-12 my-3">
-              <div className="card animate__animated animate__fadeIn">
+              <div className="card animate__animated animate__slideInLeft">
                 <div className="card-header bg-primary">
                   <span className="text-white">ตัวกรองข้อมูล</span>
                 </div>
@@ -217,7 +217,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="col-xl-9 col-sm-12 my-3">
-              <div className="card animate__animated animate__fadeIn">
+              <div className="card animate__animated animate__slideInRight">
                 <div className="card-header bg-primary">
                   <span className="text-white">อันดับงบประมาณรายได้ต่อปี</span>
                 </div>
@@ -225,7 +225,7 @@ export default function Dashboard() {
                   <Bar data={data} options={options} />
                 </div>
               </div>
-              <div className="card animate__animated my-3 animate__fadeIn">
+              <div className="card animate__animated my-3 animate__slideInRight">
                 <div className="card-header bg-primary">
                   <span className="text-white">
                     ตารางอันดับงบประมาณรายได้ต่อปี

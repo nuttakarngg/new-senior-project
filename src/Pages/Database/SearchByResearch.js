@@ -30,6 +30,7 @@ export default function Search() {
     "สาขา 7",
     "สาขา 8",
     "สาขา 9",
+
   ];
   // End Initial Variable
   // Handle Event
@@ -96,7 +97,7 @@ export default function Search() {
       </div>
       <div className="row justify-content-around">
         <div className="col-md-3 col-sm-12 my-3">
-          <div className="card animate__animated animate__fadeIn">
+          <div className="card animate__animated animate__slideInLeft">
             <div className="card-header bg-primary">
               <span className="text-white">ตัวกรองข้อมูล</span>
             </div>
