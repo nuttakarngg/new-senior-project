@@ -1,3 +1,4 @@
+import UnknowPersonImage from '../Assets/images/Unknown_person.jpg';
 function Header() {
   return (
     <header className="navbar navbar-expand-md navbar-light d-print-none">
@@ -16,7 +17,7 @@ function Header() {
             SCI-RMUTT
           </a>
         </h1>
-        {/* <div className="navbar-nav flex-row order-md-last">
+        <div className="navbar-nav flex-row order-md-last">
           <div className="nav-item dropdown">
             <a
               href="/"
@@ -26,7 +27,7 @@ function Header() {
             >
               <span
                 className="avatar avatar-sm"
-                style={{ backgroundImage: "url(./static/avatars/000m.jpg)" }}
+                style={{ backgroundImage: `url(${UnknowPersonImage})`}}
               ></span>
               <div className="d-none d-xl-block ps-2">
                 <div>ณัฐกานต์ สัธนานันต์</div>
@@ -34,25 +35,15 @@ function Header() {
               </div>
             </a>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <a href="#" className="dropdown-item">
-                Set status
-              </a>
-              <a href="#" className="dropdown-item">
+              <a href="/" className="dropdown-item">
                 Profile & account
               </a>
-              <a href="#" className="dropdown-item">
-                Feedback
-              </a>
-              <div className="dropdown-divider"></div>
-              <a href="#" className="dropdown-item">
-                Settings
-              </a>
-              <a href="#" className="dropdown-item">
+              <a href="/" className="dropdown-item">
                 Logout
               </a>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </header>
   );

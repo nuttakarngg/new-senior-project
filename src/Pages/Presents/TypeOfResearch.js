@@ -1,8 +1,44 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Bar } from "react-chartjs-2";
-export default function Dashboard() {
-  //  Initial Variable
+import canvasJs from "../../Libs/canvasjs.react";
+const CanvasJSChart = canvasJs.CanvasJSChart;
+
+export default function TypeOfResearch() {
+  // Initial Variable
+  const dispatch = useDispatch();
+  const options = {
+    animationEnabled: true,
+    borderWidth: 3,
+    title: {
+      text: "จำนวนประเภทงานวิจัย",
+      fontFamily: "Kanit",
+      horizontalAlign: "left",
+      padding: 15,
+    },
+    subtitles: [
+      {
+        fontFamily: "Kanit",
+        wrap: true,
+        text: "53 งานวิจัยทั้งหมด",
+        verticalAlign: "center",
+        fontSize: 20,
+        dockInsidePlotArea: true,
+      },
+    ],
+    data: [
+      {
+        innerRadius: "80%",
+        type: "doughnut",
+        showInLegend: true,
+        indexLabel: "{name}: {y}",
+        yValueFormatString: "#,###'%'",
+        dataPoints: [
+          { name: "วิจัยเพื่อสร้างองค์ความรู้", y: 34, color: "#4ED8DA" },
+          { name: "วิจัยเพื่อถ่ายทอดเทคโนโลยี", y: 19, color: "#C04DD8" },
+        ],
+      },
+    ],
+  };
   const initialFilterState = {
     keyword: "",
     startYear: "2000",
@@ -10,7 +46,7 @@ export default function Dashboard() {
     useYear: false,
     branchList: [],
     researchType: "",
-    year: 2000,
+    year: 2020,
   };
   const YearList = [
     2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
@@ -18,7 +54,6 @@ export default function Dashboard() {
     1996,
   ];
   const [filterState, setFilterState] = useState(initialFilterState);
-  const dispatch = useDispatch();
   const BranchList = [
     "สาขา 1",
     "สาขา 2",
@@ -30,37 +65,7 @@ export default function Dashboard() {
     "สาขา 8",
     "สาขา 9",
   ];
-  const data = {
-    labels: filterState.branchList,
-    datasets: [
-      {
-        data: Array.from({ length: filterState.branchList.length }, () =>
-          Math.floor(Math.random() * 800000)
-        ),
-        backgroundColor: Array.from({ length: filterState.branchList.length }, () =>
-        '#'+Math.floor(Math.random()*16777215).toString(16)
-      ),
-     
-      },
-    ],
-  };
-  const options = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: false,
-          },
-        },
-      ],
-    },
-  };
-  //   End Initial Variable
+  // End initial variable
   // Handle Event
   const handleCheckboxChange = (event) => {
     let list = [...filterState.branchList, event.target.value];
@@ -101,25 +106,13 @@ export default function Dashboard() {
     </option>
   ));
   // End Rander State
-
   // UseEffect
   useEffect(() => {
     dispatch({
       type: "SET_DATA",
-      payload: { navbar: ["/Presents", "/RankingPerYear"] },
+      payload: { navbar: ["/Presents", "/TypeOfResearch"] },
     });
   });
-  useEffect(() => {
-    if (filterState.startYear > filterState.endYear) {
-      const tempStartYear = filterState.startYear;
-      const tempEndYear = filterState.endYear;
-      setFilterState({
-        ...filterState,
-        startYear: tempEndYear,
-        endYear: tempStartYear,
-      });
-    }
-  }, [filterState]);
   //End UseEffect
   return (
     <div className="container-xl">
@@ -206,49 +199,59 @@ export default function Dashboard() {
             <div className="col-xl-9 col-sm-12 my-3">
               <div className="card animate__animated animate__slideInRight">
                 <div className="card-header bg-primary">
-                  <span className="text-white">อันดับงบประมาณรายได้ต่อปี</span>
+                  <span className="text-white">จำนวนประเภทงานวิจัย</span>
                 </div>
                 <div className="card-body">
-                {filterState.branchList.length===0? <div className="text-danger">*** กรุณาเลือกสาขาที่ต้องการทราบแนวโน้มของงบประมาณ ***</div>: <Bar data={data} options={options} />}
-                </div>
-              </div>
-              <div className="card animate__animated my-3 animate__slideInRight">
-                <div className="card-header bg-primary">
-                  <span className="text-white">
-                    ตารางอันดับงบประมาณรายได้ต่อปี
-                  </span>
-                </div>
-                <div className="">
-                  <div className="table-responsive">
-                    <table className="table card-table table-vcenter text-nowrap datatable">
-                      <thead>
-                        <tr>
-                          <th className="w-1">No.</th>
-                          <th>ชื่อสาขา</th>
-                          <th>งบประมาณต่อปี</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <span className="text-muted">09</span>
-                          </td>
-                          <td>
-                            <a
-                              href="invoice.html"
-                              className="text-reset"
-                              tabIndex="-1"
-                            >
-                              สาขาวิทยาการคอมพิวเตอร์
-                            </a>
-                          </td>
-                          <td className="text-success">
-                            <i className="fas fa-circle"></i> 510,000 THB
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  {filterState.branchList.length === 0 ? (
+                    <div className="text-danger">
+                      *** กรุณาเลือกสาขาที่ต้องการทราบแนวโน้มของงบประมาณ ***
+                    </div>
+                  ) : (
+                    <div
+                      className="row bg-white p-5"
+                      style={{ minHeight: "60vh" }}
+                    >
+                      <div className="col-md-6 col-sm-12 px-0">
+                        <CanvasJSChart options={options} />
+                      </div>
+                      <div className="col-md-6 col-sm-12 bg-white d-flex justify-content-center align-items-center py-4 py-4">
+                        <div className="d-flex flex-column">
+                          <div className="">
+                            <span style={{ fontSize: "24px", fontWeight: 500 }}>
+                              <i
+                                className="fa fa-circle"
+                                style={{ color: "#4ED8DA" }}
+                              ></i>{" "}
+                              83.6 %
+                            </span>
+                            <p className="text-muted">
+                              <i
+                                className="fa fa-circle"
+                                style={{ color: "white" }}
+                              ></i>{" "}
+                              วิจัยเพื่อสร้างองความรู้
+                            </p>
+                          </div>
+                          <div className="">
+                            <span style={{ fontSize: "24px", fontWeight: 500 }}>
+                              <i
+                                className="fa fa-circle"
+                                style={{ color: "#C04DD8" }}
+                              ></i>{" "}
+                              16.4 %
+                            </span>
+                            <p className="text-muted">
+                              <i
+                                className="fa fa-circle"
+                                style={{ color: "white" }}
+                              ></i>{" "}
+                              วิจัยเพื่อถ่ายทอดเทคโนโลยี
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
