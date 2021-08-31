@@ -18,3 +18,26 @@ body{
     border-color: #4299e15b !important;
 }
 
+.hover-danger:hover{
+    background-color: #d63939;
+    color: white !important;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.hover-warning:hover{
+    background-color: #f76707;
+    color: white !important;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+
+.form-selectgroup-input:focus{
+    outline: 0 !important;
+}
+
+@media screen and (max-width:810px) {
+    .searchbar{
+        width: 100% !important;
+    }
+}

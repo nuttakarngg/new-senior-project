@@ -53,7 +53,6 @@ export default function Search() {
     });
   });
   useEffect(() => {
-    // console.log(filterState);
   }, [filterState]);
   // End UseEffect
   return (
@@ -83,7 +82,7 @@ export default function Search() {
                 <small>*ชื่อ-นามสกุล, หน่วยงาน, อีเมล์</small>
               </div>
               <div className="mt-3">
-                <label classname="form-label">ตำแหน่งทางวิชาการ</label>
+                <label className="form-label">ตำแหน่งทางวิชาการ</label>
                 <select type="text" className="form-select" onChange={(event)=>{setFilterState({...filterState,acPosition:event.target.value})}} >
                   <option value="">ทั้งหมด</option>
                   {renderAcademiaPosition}

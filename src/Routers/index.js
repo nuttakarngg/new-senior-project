@@ -8,6 +8,7 @@ import Dashboard from "../Pages/Presents/Dashboard";
 import RankingPerYear from "../Pages/Presents/RankingPerYear";
 import TrendByYear from "../Pages/Presents/TrendByYear";
 import TypeOfResearch from "../Pages/Presents/TypeOfResearch";
+import Users from "../Pages/UsersManage/Users";
 // function PrivateRoute({ children }) {
 //   return JSON.parse(localStorage.getItem('isLogin')) !== null?children:<Redirect to="/login"/>
 // }
@@ -33,6 +34,7 @@ function AppRouting() {
       <Route path="/Presents/RankingPerYear"><RankingPerYear/></Route>
       <Route path="/Presents/TrendByYear"><TrendByYear/></Route>
       <Route path="/Presents/TypeOfResearch"><TypeOfResearch/></Route>
+      <Route path="/UsersManage/Researcher"><Users/></Route>
       {/* <PrivateRoute path="/getAll"><SearchByResearch/></PrivateRoute> */}
     </Switch>
   );

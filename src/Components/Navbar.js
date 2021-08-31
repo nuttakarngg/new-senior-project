@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
 function Navbar() {
   let navbar = useSelector((state) => state.navbar) || [];
+  let keyword = useSelector((state) => state.nav_keyword) || "";
+  const dispatch = useDispatch();
+  const searchNav = (e) => {
+    dispatch({
+      type: "SET_KEYWORD",
+      payload: e.target.value,
+    });
+  };
   return (
     <div className="navbar-expand-md">
       <div className="collapse navbar-collapse" id="navbar-menu">
@@ -148,7 +158,12 @@ function Navbar() {
                   </div>
                 </div>
               </li>
-              <li className="nav-item dropdown">
+              <li
+                className={
+                  "nav-item dropdown " +
+                  (navbar[0] === "/UsersManage" ? "active" : "")
+                }
+              >
                 <a
                   className="nav-link dropdown-toggle"
                   href="#navbar-base"
@@ -164,12 +179,15 @@ function Navbar() {
                 <div className="dropdown-menu">
                   <div className="dropdown-menu-columns">
                     <div className="dropdown-menu-column">
-                      <a className="dropdown-item" href="/">
-                        จัดการผู้เชี่ยวชาญ
-                      </a>
-                      <a className="dropdown-item" href="/">
-                        จัดการผู้ดูแลระบบ
-                      </a>
+                      <Link
+                        className={
+                          "dropdown-item " +
+                          (navbar[1] === "/Users" ? "active" : "")
+                        }
+                        to="/UsersManage/Researcher"
+                      >
+                        จัดการผู้ใช้งาน
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -198,8 +216,15 @@ function Navbar() {
                   </span>
                   <input
                     type="text"
+                    value={keyword}
+                    onKeyUp={(e) => {
+                      searchNav(e);
+                    }}
+                    onChange={(e) => {
+                      searchNav(e);
+                    }}
                     className="form-control"
-                    placeholder="Search…"
+                    placeholder="ค้นหาเมนู"
                   />
                 </div>
               </form>

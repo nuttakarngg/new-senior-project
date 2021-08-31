@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import canvasJs from "../../Libs/canvasjs.react";
-const CanvasJSChart = canvasJs.CanvasJSChart;
+import YearRange from "../../Components/YearRange";
 
 export default function TypeOfResearch() {
   // Initial Variable
+  const CanvasJSChart = canvasJs.CanvasJSChart;
   const dispatch = useDispatch();
   const options = {
     animationEnabled: true,
@@ -87,19 +88,6 @@ export default function TypeOfResearch() {
       <span className="form-check-label">{branch}</span>
     </label>
   ));
-
-  const renderYearStart = YearList.sort().map((year, idx) => (
-    <option key={idx} value={year}>
-      {year}
-    </option>
-  ));
-  const renderYearEnd = YearList.sort()
-    .reverse()
-    .map((year, idx) => (
-      <option key={idx} value={year}>
-        {year}
-      </option>
-    ));
   const renderYear = YearList.sort().map((year, idx) => (
     <option key={idx} value={year}>
       {year}
@@ -113,6 +101,8 @@ export default function TypeOfResearch() {
       payload: { navbar: ["/Presents", "/TypeOfResearch"] },
     });
   });
+  useEffect(()=>{
+  },[filterState])
   //End UseEffect
   return (
     <div className="container-xl">
@@ -153,40 +143,7 @@ export default function TypeOfResearch() {
                       {renderYear}
                     </select>
                     <div className="row" hidden={!filterState.useYear}>
-                      <div className="col-md-2 d-flex align-items-center">
-                        ตั้งแต่
-                      </div>
-                      <div className="col-md-5 col-sm-12">
-                        <select
-                          className="form-select"
-                          value={filterState.startYear}
-                          onChange={(event) => {
-                            setFilterState({
-                              ...filterState,
-                              startYear: event.target.value,
-                            });
-                          }}
-                        >
-                          {renderYearStart}
-                        </select>
-                      </div>
-                      <div className="col-md-1 p-md-0 d-flex align-items-center">
-                        ถึง
-                      </div>
-                      <div className="col-md-4 col-sm-12">
-                        <select
-                          className="form-select"
-                          value={filterState.endYear}
-                          onChange={(event) => {
-                            setFilterState({
-                              ...filterState,
-                              endYear: event.target.value,
-                            });
-                          }}
-                        >
-                          {renderYearEnd}
-                        </select>
-                      </div>
+                      <YearRange onChange={({startYear,endYear})=>setFilterState({...filterState,startYear,endYear})} value={initialFilterState} />
                     </div>
                   </div>
                   <div className="mt-3">

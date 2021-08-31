@@ -6,13 +6,20 @@ function Footer() {
           <div className="col-12 col-lg-auto mt-3 mt-lg-0">
             <ul className="list-inline list-inline-dots mb-0">
               <li className="list-inline-item">
-                สาขาวิทยาการคอมพิวเตอร์ คณะวิทยาศาสตร์และเทคโนโลยี
-                มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี
+                <a href="http://www.sci.rmutt.ac.th/comsci/">
+                  สาขาวิทยาการคอมพิวเตอร์
+                </a>{" "}
+                <a href="http://www.sci.rmutt.ac.th/">
+                  คณะวิทยาศาสตร์และเทคโนโลยี
+                </a>{" "}
+                <a href="https://www.rmutt.ac.th/">
+                  มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี
+                </a>
               </li>
               <li className="list-inline-item">
-                <a href="/" className="link-secondary" rel="noopener">
+                <span>
                   v1.0.0
-                </a>
+                </span>
               </li>
             </ul>
           </div>
