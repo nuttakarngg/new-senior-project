@@ -1,14 +1,77 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link,useHistory  } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+import Loading from "../../Components/Loading";
+import { loginService } from "../../services/auth.service";
+import isEmail from "isemail";
 export default function LoginPage() {
   const history = useHistory();
   const dispatch = useDispatch();
-  useEffect(()=>{
-    dispatch({type:'SET_DATA',payload:{navbar:[]}})
-  })
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const [remember, setRemember] = useState({ status: false });
+  const [error, setError] = useState({ isEmail: true, isPassword: true });
+  useEffect(() => {
+    if (localStorage.getItem("rememberMe")) {
+      const rememberData = JSON.parse(localStorage.getItem("rememberMe"));
+      setLoginData({ ...loginData, email: rememberData.email });
+      setRemember(rememberData);
+    }
+    dispatch({ type: "SET_DATA", payload: { navbar: [] } });
+  }, []);
+  const login = async () => {
+    setIsLoading(true);
+    try {
+      const { email, password } = loginData;
+      setError({ isPassword: !!password, isEmail: !!email });
+      if (!email) {
+        toast.error("กรุณากรอกอีเมล");
+      } else if (!isEmail.validate(email)) {
+        toast.error("กรุณากรอกอีเมลให้ถูกต้อง");
+      }
+
+      if (!password) {
+        toast.error("กรุณากรอกรหัสผ่าน");
+      }
+      if (email && password) {
+        if (remember.status) {
+          localStorage.setItem(
+            "rememberMe",
+            JSON.stringify({ ...remember, email: email })
+          );
+        } else {
+          localStorage.removeItem("rememberMe");
+        }
+        const result = await loginService(loginData);
+        if (result.status === 200) {
+          localStorage.setItem("token", JSON.stringify(result.data.token));
+        }
+      }
+    } catch (e) {
+      if (e.response.status === 403) {
+        toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const rememberMe = (e) => {
+    if (e.target.checked) {
+      setRemember({
+        ...remember,
+        status: true,
+      });
+    } else {
+      setRemember({
+        status: false,
+      });
+    }
+  };
   return (
     <div className="container-xl mb-5">
+      <Loading status={isLoading} />
+
       <div className="row mt-3">
         <div className="bg-light animate__animated animate__zoomIn">
           <div className="container">
@@ -17,7 +80,7 @@ export default function LoginPage() {
                 <div className="bg-white shadow rounded">
                   <div className="row mt-5">
                     <div className="col-md-7 pe-0">
-                    <div className="p-3">
+                      <div className="p-3">
                         <span
                           className="text-primary cursor-pointer"
                           onClick={() => {
@@ -40,8 +103,23 @@ export default function LoginPage() {
                               </div>
                               <input
                                 type="text"
-                                className="form-control"
+                                className={
+                                  "form-control" +
+                                  (error.isEmail ? "" : " is-invalid")
+                                }
                                 placeholder="กรุณากรอกอีเมล"
+                                value={loginData.email}
+                                onKeyDown={(e) =>
+                                  e.code === "Enter" || e.code === "NumpadEnter"
+                                    ? login()
+                                    : null
+                                }
+                                onChange={(e) =>
+                                  setLoginData({
+                                    ...loginData,
+                                    email: e.target.value,
+                                  })
+                                }
                               />
                             </div>
                           </div>
@@ -55,9 +133,24 @@ export default function LoginPage() {
                                 <i className="fas fa-key"></i>
                               </div>
                               <input
-                                type="text"
-                                className="form-control"
+                                type="password"
+                                className={
+                                  "form-control" +
+                                  (error.isPassword ? "" : " is-invalid")
+                                }
                                 placeholder="กรุณากรอกรหัสผ่าน"
+                                value={loginData.password}
+                                onKeyDown={(e) =>
+                                  e.code === "Enter" || e.code === "NumpadEnter"
+                                    ? login()
+                                    : null
+                                }
+                                onChange={(e) =>
+                                  setLoginData({
+                                    ...loginData,
+                                    password: e.target.value,
+                                  })
+                                }
                               />
                             </div>
                           </div>
@@ -68,6 +161,8 @@ export default function LoginPage() {
                                 className="form-check-input"
                                 type="checkbox"
                                 id="inlineFormCheck"
+                                onChange={rememberMe}
+                                checked={remember.status}
                               />
                               <label
                                 className="form-check-label"
@@ -79,7 +174,10 @@ export default function LoginPage() {
                           </div>
 
                           <div className="col-sm-6">
-                            <Link to="/forgot-password" className="float-end text-primary">
+                            <Link
+                              to="/forgot-password"
+                              className="float-end text-primary"
+                            >
                               ลืมรหัสผ่าน?
                             </Link>
                           </div>
@@ -88,10 +186,7 @@ export default function LoginPage() {
                             <button
                               type="submit"
                               className="btn btn-primary px-4 float-end mt-4"
-                              onClick={()=>{
-                                localStorage.setItem('isLogin',true);
-                                window.location = '/getAll'
-                              }}
+                              onClick={login}
                             >
                               เข้าสู่ระบบ
                             </button>
