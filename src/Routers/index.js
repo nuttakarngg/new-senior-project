@@ -1,4 +1,4 @@
-import { Switch, Route,Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/Authentication/LoginPage";
 import ForgotPassword from "../Pages/Authentication/ForgotPassword";
@@ -9,9 +9,10 @@ import RankingPerYear from "../Pages/Presents/RankingPerYear";
 import TrendByYear from "../Pages/Presents/TrendByYear";
 import TypeOfResearch from "../Pages/Presents/TypeOfResearch";
 import Users from "../Pages/UsersManage/Users";
-function PrivateRoute({ children }) {
-  return JSON.parse(localStorage.getItem('token')) !== null?children:<Redirect to="/login"/>
-}
+import { PrivateRoute } from "react-auth-kit";
+// function PrivateRoute({ children }) {
+//   return JSON.parse(localStorage.getItem('token')) !== null?children:<Redirect to="/login"/>
+// }
 function AppRouting() {
   return (
     <Switch>
@@ -30,12 +31,23 @@ function AppRouting() {
       <Route path="/Database/SearchByResearch">
         <SearchByResearch />
       </Route>
-      <Route path="/Presents/Dashboard"><Dashboard/></Route>
-      <Route path="/Presents/RankingPerYear"><RankingPerYear/></Route>
-      <Route path="/Presents/TrendByYear"><TrendByYear/></Route>
-      <Route path="/Presents/TypeOfResearch"><TypeOfResearch/></Route>
-      <Route path="/UsersManage/Researcher"><Users/></Route>
-      <PrivateRoute path="/getAll"><SearchByResearch/></PrivateRoute>
+      <Route path="/Presents/Dashboard">
+        <Dashboard />
+      </Route>
+      <Route path="/Presents/RankingPerYear">
+        <RankingPerYear />
+      </Route>
+      <Route path="/Presents/TrendByYear">
+        <TrendByYear />
+      </Route>
+      <Route path="/Presents/TypeOfResearch">
+        <TypeOfResearch />
+      </Route>
+      <Route path="/UsersManage/Researcher">
+        <Users />
+      </Route>
+      <PrivateRoute path="/getAll" component={SearchByResearch} loginPath="/login">
+      </PrivateRoute>
     </Switch>
   );
 }

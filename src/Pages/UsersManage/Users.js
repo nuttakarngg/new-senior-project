@@ -58,7 +58,7 @@ export default function Researcher() {
     status: true,
     role: "แอดมิน, ผู้เชี่ยวชาญ",
   }));
-  const [data, setData] = useState(initData);
+  const [data] = useState(initData);
   // const [searchText, setSearchText] = useState("")
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState({});
@@ -69,13 +69,13 @@ export default function Researcher() {
   }, [currentPage, data]); // eslint-disable-line react-hooks/exhaustive-deps
   const dispatch = useDispatch();
 
-  function handleSwitch(idx) {
-    let objDataIndex = data.findIndex((obj) => obj.id === idx);
-    let temp = data;
-    temp[objDataIndex].status = !temp[objDataIndex].status;
-    console.log(temp[objDataIndex].status);
-    setData([...temp]);
-  }
+  // function handleSwitch(idx) {
+  //   let objDataIndex = data.findIndex((obj) => obj.id === idx);
+  //   let temp = data;
+  //   temp[objDataIndex].status = !temp[objDataIndex].status;
+  //   console.log(temp[objDataIndex].status);
+  //   setData([...temp]);
+  // }
   function searchData(keyword) {
     // setData(data.filter((x) => x.id === +keyword))
   }
@@ -207,7 +207,10 @@ export default function Researcher() {
                       </div>
                       <div className="col-xl-6 col-sm-4">
                         <label className="form-label">ทำงาน</label>
-                        <Switch onChange={(value) => console.log(value)}  className="mt-1"/>
+                        <Switch
+                          onChange={(value) => console.log(value)}
+                          className="mt-1"
+                        />
                       </div>
                     </div>
                   </div>

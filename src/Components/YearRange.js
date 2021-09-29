@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function YearRange(props) {
   const { onChange, value } = props;
@@ -21,11 +21,11 @@ export default function YearRange(props) {
         {year}
       </option>
     ));
-  function emitvalue() {
-    onChange(filterState);
-  }
-
-  useEffect(() => {
+  function emitvalue(event) {
+    setFilterState({
+      ...filterState,
+      startYear: event.target.value,
+    });
     if (filterState.startYear > filterState.endYear) {
       const tempStartYear = filterState.startYear;
       const tempEndYear = filterState.endYear;
@@ -35,8 +35,9 @@ export default function YearRange(props) {
         endYear: tempStartYear,
       });
     }
-    emitvalue();
-  }, [filterState]); // eslint-disable-line react-hooks/exhaustive-deps
+    onChange(filterState);
+  }
+
   return (
     <>
       <div className="col-md-2 d-flex align-items-center">ตั้งแต่</div>
@@ -45,10 +46,7 @@ export default function YearRange(props) {
           className="form-select"
           value={filterState.startYear}
           onChange={(event) => {
-            setFilterState({
-              ...filterState,
-              startYear: event.target.value,
-            });
+            emitvalue(event);
           }}
         >
           {renderYearStart}
@@ -60,11 +58,7 @@ export default function YearRange(props) {
           className="form-select"
           value={filterState.endYear}
           onChange={(event) => {
-            setFilterState({
-              ...filterState,
-              endYear: event.target.value,
-            });
-            emitvalue();
+            emitvalue(event);
           }}
         >
           {renderYearEnd}

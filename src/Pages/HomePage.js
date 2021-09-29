@@ -6,9 +6,10 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 export default function HomePage() {
   const dispatch = useDispatch();
-  useEffect(()=>{
-    dispatch({type:'SET_DATA',payload:{navbar:['/HomePage']}})
-  })
+
+  useEffect(() => {
+    dispatch({ type: "SET_DATA", payload: { navbar: ["/HomePage"] } });
+  });
   return (
     <div className=" container-xl">
       <div className="row">
@@ -47,7 +48,10 @@ export default function HomePage() {
                 เพื่อสนับสนุนการเลือกผู้เชี่ยวชาญในการจัดทำงานวิจัย
               </p>
               <div className="empty-action">
-                <Link to="/Database/SearchByResearcher" className="btn btn-primary">
+                <Link
+                  to="/Database/SearchByResearcher"
+                  className="btn btn-primary"
+                >
                   <i className="fas fa-search me-2" />
                   สืบค้นทันที
                 </Link>
@@ -67,7 +71,10 @@ export default function HomePage() {
                 เพื่อสนับสนุนการเลือกผู้จัดทำงานวิจัยโดยรับคำแนะนำจากระบบ
               </p>
               <div className="empty-action">
-                <Link to="/Database/SearchByResearcher" className="btn btn-primary">
+                <Link
+                  to="/Database/SearchByResearcher"
+                  className="btn btn-primary"
+                >
                   <i className="fas fa-user-tag me-2" />
                   เริ่มแนะนำทันที
                 </Link>
@@ -90,6 +97,10 @@ export default function HomePage() {
                 <Link to="/login" className="btn btn-primary">
                   <i className="fas fa-sign-in-alt me-2" />
                   เข้าสู่ระบบ
+                </Link>
+                <Link to="/Presents/Dashboard" className="btn btn-primary">
+                  <i className="fas fa-sign-in-alt me-2" />
+                  กระดานข้อมูล
                 </Link>
               </div>
             </div>
