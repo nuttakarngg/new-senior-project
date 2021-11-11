@@ -3,21 +3,26 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import UnknowPersonImage from "../Assets/images/Unknown_person.jpg";
 import { getUserData } from "../services/auth.service";
+import { useAuth } from "../authentication/auth-context";
 function Header() {
+  const auth = useAuth();
   const [userData, setUserData] = useState({});
+  console.log(auth);
   const fetchUser = async () => {
-    if (localStorage.getItem("token")) {
+    if (auth.hasLogin) {
       const result = await getUserData();
-      setUserData(result.data.data);
+      if (result.data.status === 200) {
+        setUserData(result.data.data);
+      }
     }
   };
   window.addEventListener("storage", fetchUser);
 
   useEffect(() => {
     fetchUser();
-  }, [userData]);
-  const logout = () => {
-    localStorage.removeItem("token");
+  }, []);
+  const Logout = () => {
+    auth.logout();
     setUserData({});
   };
   return (
@@ -37,7 +42,7 @@ function Header() {
             SCI-RMUTT
           </Link>
         </h1>
-        {localStorage.getItem("token") ? (
+        {auth.hasLogin ? (
           <div className="navbar-nav flex-row order-md-last">
             <div className="nav-item dropdown">
               <Link
@@ -51,17 +56,19 @@ function Header() {
                   style={{ backgroundImage: `url(${UnknowPersonImage})` }}
                 ></span>
                 <div className="d-none d-xl-block ps-2">
-                  <div>{`${userData.firstName} ${userData.lastName}`}</div>
+                  <div>{`${userData.firstName || ""} ${
+                    userData.lastName || ""
+                  }`}</div>
                   <div className="mt-1 small text-muted">
                     วิทยาการคอมพิวเตอร์
                   </div>
                 </div>
               </Link>
               <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <Link to="/" className="dropdown-item">
+                <Link to="/Users/Profile" className="dropdown-item">
                   Profile & account
                 </Link>
-                <span onClick={logout} className="dropdown-item">
+                <span onClick={Logout} className="dropdown-item">
                   Logout
                 </span>
               </div>

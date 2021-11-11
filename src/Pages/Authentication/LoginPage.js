@@ -3,12 +3,10 @@ import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading from "../../Components/Loading";
 import { loginService } from "../../services/auth.service";
-import { useSignIn } from "react-auth-kit";
 
 import isEmail from "isemail";
 export default function LoginPage() {
   const history = useHistory();
-  const signIn = useSignIn();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [remember, setRemember] = useState({ status: false });
@@ -46,20 +44,6 @@ export default function LoginPage() {
         const result = await loginService(loginData);
         console.log(result)
         if (result.data.status === 200) {
-          // ----------------------------------------
-
-          if (
-            signIn({
-              token: result.data.token,
-            })
-          ) {
-            // Only if you are using refreshToken feature
-            // Redirect or do-something
-          } else {
-            //Throw error
-          }
-
-          // ----------------------------------------
           localStorage.setItem("token", result.data.token);
           window.dispatchEvent(new Event("storage"));
           history.push("/");

@@ -6,13 +6,35 @@ import Switch from "rc-switch";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import {
+  addUser,
+  editUser,
+  getAllUser,
+  getUserById,
+  removeUserById,
+} from "../../services/user.service";
+import Loading from "../../Components/Loading";
+import { getAllBranch } from "../../services/branch.service";
+import { getAllRoles } from "../../services/role.service";
 
 let PageSize = 10;
 export default function Researcher() {
-  // toast.success("Wow so easy!");
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState({});
   const MySwal = withReactContent(Swal);
+  const [userData, setUserData] = useState({
+    ac_position: "ศาสตราจารย์",
+    branchId: 1,
+  });
+  const [branchData, setBranchData] = useState([]);
+  const [roleData, setRoleData] = useState([]);
+  const [role, setRole] = useState([]);
+  const [status, setStatus] = useState(false);
+  const [search, setSearch] = useState("");
   const closeModalRef = useRef();
-
+  function reset() {
+    setHasError({});
+  }
   function save() {
     MySwal.fire({
       title: <p>ยืนยันแก้ไขข้อมูล</p>,
@@ -21,16 +43,104 @@ export default function Researcher() {
       confirmButtonText: "ยินยัน",
       showCancelButton: true,
     }).then((result) => {
-      console.log(result);
       if (result.isConfirmed === true) {
-        console.log(closeModalRef.current);
+        let iserror = {};
+        if (!userData.firstName) {
+          iserror.firstNameError = true;
+        } else {
+          iserror.firstNameError = false;
+        }
+        if (!userData.lastName) {
+          iserror.lastNameError = true;
+        } else {
+          iserror.lastNameError = false;
+        }
+        if (!userData.email) {
+          iserror.emailError = true;
+        } else {
+          iserror.emailError = false;
+        }
+
+        if (modal.mode === "create") {
+          if (!userData.password) {
+            iserror.passwordError = true;
+          } else {
+            iserror.passwordError = false;
+          }
+          let saveData = {
+            ...userData,
+            roleId: role,
+            status: status ? "Y" : "N",
+          };
+          setHasError({ ...iserror });
+
+          if (
+            iserror.emailError ||
+            iserror.lastNameError ||
+            iserror.passwordError ||
+            iserror.firstNameError
+          ) {
+            return null;
+          }
+          addUser(saveData)
+            .then((result) => {
+              setIsLoading(true);
+              if (result.data.status === 200) {
+                toast.success("เพิ่มข้อมูลผู้ใช้สำเร็จ");
+              } else {
+                toast.error("เกิดข้อผิดพลาด อีเมลนี้อาจถูกใช้แล้ว");
+              }
+            })
+            .finally(() => {
+              setIsLoading(true);
+              setTimeout(() => {
+                fetchUser().then(() => setIsLoading(false));
+              }, 2000);
+            });
+        } else if (modal.mode === "update") {
+          setHasError({ ...iserror });
+
+          if (
+            iserror.emailError ||
+            iserror.lastNameError ||
+            iserror.passwordError ||
+            iserror.firstNameError
+          ) {
+            return null;
+          }
+          let saveData = {
+            id: modal.id,
+            ...userData,
+            roleId: role,
+            status: status ? "Y" : "N",
+          };
+          editUser(modal.id, saveData)
+            .then((result) => {
+              if (result.data.status === 200) {
+                toast.success("แก้ไขข้อมูลสำเร็จ");
+              }
+            })
+            .finally(() => {
+              setIsLoading(true);
+              setTimeout(() => {
+                fetchUser().then(() => setIsLoading(false));
+              }, 2000);
+            });
+        }
+
         closeModalRef.current.click();
-        toast.success("บักทึกข้อมูลสำเร็จ");
       }
-      // return MySwal.fire(<p>Shorthand works too</p>)
+      reset();
     });
   }
-  function remove() {
+  function _renderBranchOption(item, idx) {
+    return (
+      <option key={idx} value={item.id}>
+        {item.name_th}
+      </option>
+    );
+  }
+  function remove(id) {
     MySwal.fire({
       title: <p>ยืนยันการลบข้อมูล</p>,
       icon: "warning",
@@ -38,28 +148,24 @@ export default function Researcher() {
       cancelButtonText: "ยกเลิก",
       confirmButtonText: "ยินยัน",
       showCancelButton: true,
-    }).then((result) => {
-      console.log(result);
+    }).then(async (result) => {
       if (result.isConfirmed === true) {
-        console.log(closeModalRef.current);
+        setIsLoading(true);
+        const result = await removeUserById(id);
+        if (result.data.status === 200) {
+          toast.success("ลบข้อมูลสำเร็จ");
+        } else if (result.data.status === 400) {
+          toast.error("ไม่สามารถลบข้อมูลตัวเองได้");
+        }
+        fetchUser();
+        setCurrentPage(1);
+        setTimeout(() => setIsLoading(false), 1000);
         closeModalRef.current.click();
-        toast.success("ลบข้อมูลสำเร็จ");
       }
-      // return MySwal.fire(<p>Shorthand works too</p>)
     });
   }
-  const initData = Array.from({ length: 100 }, (_, index) => ({
-    id: index,
-    fullName: "นายณัฐกานต์ สัธนานันต์",
-    ac_position: "ผู้ช่วยศาตราจารย์",
-    education: "ปริญญาตรี",
-    eduMajor: "วิทยาการคอมพิวเตอร์",
-    email: "nuttakarngg@gmail.com",
-    status: true,
-    role: "แอดมิน, ผู้เชี่ยวชาญ",
-  }));
-  const [data] = useState(initData);
-  // const [searchText, setSearchText] = useState("")
+
+  const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState({});
   let currentTableData = useMemo(() => {
@@ -69,46 +175,123 @@ export default function Researcher() {
   }, [currentPage, data]); // eslint-disable-line react-hooks/exhaustive-deps
   const dispatch = useDispatch();
 
-  // function handleSwitch(idx) {
-  //   let objDataIndex = data.findIndex((obj) => obj.id === idx);
-  //   let temp = data;
-  //   temp[objDataIndex].status = !temp[objDataIndex].status;
-  //   console.log(temp[objDataIndex].status);
-  //   setData([...temp]);
-  // }
-  function searchData(keyword) {
-    // setData(data.filter((x) => x.id === +keyword))
-  }
-  function updateUser() {
-    let data = {
-      title: "แก้ไขข้อมูล",
+  function insertUser() {
+    setUserData({
+      ...userData,
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    });
+
+    let ndata = {
+      title: "เพิ่มข้อมูล",
+      mode: "create",
     };
-    setModal(data);
+    setModal(ndata);
   }
+  function updateUser(id) {
+    let ndata = {
+      title: "แก้ไขข้อมูล",
+      mode: "update",
+      id: id,
+    };
+    setHasError({});
+    setModal(ndata);
+  }
+  async function fetchBranch() {
+    const branch = await getAllBranch();
+    if (branch.data.status === 200) {
+      setBranchData(branch.data.data);
+    }
+  }
+  async function fetchRole() {
+    const roles = await getAllRoles();
+    if (roles.data.status === 200) {
+      setRoleData(roles.data.data);
+    }
+  }
+  async function fetchUser() {
+    const user = await getAllUser(search);
+    if (user.data.status === 200) {
+      setData(user.data.data);
+    }
+  }
+  function getRoles(roles) {
+    const roleName = roles?.map((item) => item.name);
+    return roleName?.join(", ") || "-";
+  }
+
+  function _renderRoles({ name, id }) {
+    return (
+      <label className="form-selectgroup-item" key={id}>
+        <input
+          type="checkbox"
+          value={id}
+          checked={role.some((i) => i === id)}
+          onChange={(e) => {
+            let newArray = [...role, parseInt(e.target.value)];
+            if (role.includes(parseInt(e.target.value))) {
+              newArray = newArray.filter(
+                (value) => value !== parseInt(e.target.value)
+              );
+            }
+            setRole([...newArray]);
+          }}
+          className="form-selectgroup-input"
+        />
+        <span className="form-selectgroup-label">{name}</span>
+      </label>
+    );
+  }
+  useEffect(() => {
+    fetchUser();
+  }, [search]);
+  useEffect(() => {
+    if (modal.mode === "update") {
+      getUserById(modal.id).then((result) => {
+        setUserData(result.data.data);
+        setRole([...result.data.data?.roles.map((role) => role.id)]);
+        setStatus(result.data.data?.status === "Y" ? true : false);
+      });
+    } else {
+      setUserData({
+        ac_position: "ศาสตราจารย์",
+        branchId: 1,
+      });
+    }
+  }, [modal]);
+  useEffect(() => {
+    fetchUser()
+      .then(() => fetchBranch())
+      .then(() => fetchRole());
+  }, []);
   // Rander State
   const renderDataTable = currentTableData.map((item, idx) => (
     <tr key={item.id}>
-      <td>{item.id + 1}</td>
-      <td>{item.ac_position}</td>
-      <td>{item.fullName}</td>
-      {/* <td>{item.education}</td> */}
-      <td>{item.eduMajor}</td>
-      <td>{item.email}</td>
-      <td align="center">
-        <i className="fas fa-check text-success"></i>
-        {/* <Switch checked={item.status} onChange={() => handleSwitch(item.id)} /> */}
+      <td>{idx + 1}</td>
+      <td className="text-center">{item.ac_position || "-"}</td>
+      <td className="text-center">
+        {`${item.firstName} ${item.lastName}` || "-"}
       </td>
-      <td align="center">{item.role}</td>
+      <td className="text-center">{item.branch?.name_th || "-"}</td>
+      <td className="text-center">{item.email || "-"}</td>
+      <td align="center">
+        {item.status === "Y" ? (
+          <i className="fas fa-check text-success"></i>
+        ) : null}
+      </td>
+      <td align="center">{getRoles(item.roles)}</td>
       <td>
         <span
           className="fas fa-pencil-alt text-warning  cursor-pointer hover-warning p-2"
           data-bs-toggle="modal"
           data-bs-target="#modal-simple"
-          onClick={() => updateUser()}
+          onClick={() => updateUser(item.id)}
         ></span>
         <span
           className="fas fa-trash text-danger  cursor-pointer p-2 hover-danger"
-          onClick={() => remove()}
+          onClick={() => remove(item.id)}
         ></span>
       </td>
     </tr>
@@ -120,13 +303,24 @@ export default function Researcher() {
       type: "SET_DATA",
       payload: { navbar: ["/UsersManage", "/Users"] },
     });
-  });
+  },[]);
   // useEffect(() => {
   //   setCurrentPage(1);
   // }, [data]);
   //End UseEffect
   return (
     <div className="container-xl">
+      <Loading status={isLoading} />
+      <div className="d-flex justify-content-end mt-3">
+        <button
+          className="btn btn-primary"
+          onClick={() => insertUser(true)}
+          data-bs-toggle="modal"
+          data-bs-target="#modal-simple"
+        >
+          เพิ่มข้อมูลผู้ใช้ <i className="fas fa-plus ms-2" />
+        </button>
+      </div>
       <div
         className="modal modal-blur fade"
         id="modal-simple"
@@ -152,63 +346,124 @@ export default function Researcher() {
                     <div className="row">
                       <div className="col-xl-4 col-sm-12">
                         <label className="form-label">ตำแหน่งทางวิชาการ</label>
-                        <select className="form-select">
-                          <option disabled>โปรดเลือก</option>
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
+                        <select
+                          className="form-select"
+                          value={userData.ac_position}
+                          onChange={(e) =>
+                            setUserData({
+                              ...userData,
+                              ac_position: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="ศาสตราจารย์">ศาสตราจารย์</option>
+                          <option value="รองศาสตราจารย์">รองศาสตราจารย์</option>
+                          <option value="ผู้ช่วยศาสตราจารย์">
+                            ผู้ช่วยศาสตราจารย์
+                          </option>
                         </select>
                       </div>
                       <div className="col-xl-4 col-sm-12">
                         <label className="form-label">ชื่อ</label>
-                        <input type="text" className="form-control" />
+                        <input
+                          type="text"
+                          onChange={(e) =>
+                            setUserData({
+                              ...userData,
+                              firstName: e.target.value,
+                            })
+                          }
+                          value={userData.firstName}
+                          className={
+                            "form-control " +
+                            (hasError.firstNameError ? "is-invalid" : "")
+                          }
+                        />
                       </div>
                       <div className="col-xl-4 col-sm-12">
                         <label className="form-label">นามสกุล</label>
-                        <input type="text" className="form-control" />
+                        <input
+                          type="text"
+                          onChange={(e) =>
+                            setUserData({
+                              ...userData,
+                              lastName: e.target.value,
+                            })
+                          }
+                          value={userData.lastName}
+                          className={
+                            "form-control " +
+                            (hasError.lastNameError ? "is-invalid" : "")
+                          }
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="mb-3">
                     <label className="form-label">สาขาวิชา</label>
-                    <input type="text" className="form-control" />
+                    <select
+                      className="form-select"
+                      value={userData.branchId}
+                      onChange={(e) =>
+                        setUserData({
+                          ...userData,
+                          branchId: e.target.value,
+                        })
+                      }
+                    >
+                      {branchData.map(_renderBranchOption)}
+                    </select>
                   </div>
                   <div className="mb-3">
                     <label className="form-label">อีเมล์</label>
-                    <input type="text" className="form-control" />
+                    <input
+                      type="text"
+                      onChange={(e) =>
+                        setUserData({
+                          ...userData,
+                          email: e.target.value,
+                        })
+                      }
+                      value={userData.email}
+                      className={
+                        "form-control " +
+                        (hasError.emailError ? "is-invalid" : "")
+                      }
+                    />
                   </div>
+                  {modal.mode === "create" && (
+                    <div className="mb-3">
+                      <label className="form-label">รหัสผ่าน</label>
+                      <input
+                        type="password"
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            password: e.target.value,
+                          })
+                        }
+                        value={userData.password}
+                        className={
+                          "form-control " +
+                          (hasError.passwordError ? "is-invalid" : "")
+                        }
+                      />
+                    </div>
+                  )}
 
                   <div className="mb-3">
                     <div className="row">
                       <div className="col-xl-6 col-sm-4 mb-3">
                         <label className="form-label">บทบาท</label>
                         <div className="form-selectgroup">
-                          <label className="form-selectgroup-item">
-                            <input
-                              type="checkbox"
-                              value="admin"
-                              className="form-selectgroup-input"
-                            />
-                            <span className="form-selectgroup-label">
-                              แอดมิน
-                            </span>
-                          </label>
-                          <label className="form-selectgroup-item">
-                            <input
-                              type="checkbox"
-                              value="researcher"
-                              className="form-selectgroup-input"
-                            />
-                            <span className="form-selectgroup-label">
-                              ผู้เชี่ยวชาญ
-                            </span>
-                          </label>
+                          {roleData.map(_renderRoles)}
                         </div>
                       </div>
                       <div className="col-xl-6 col-sm-4">
                         <label className="form-label">ทำงาน</label>
                         <Switch
-                          onChange={(value) => console.log(value)}
+                          onChange={(value) => setStatus(value)}
+                          checked={status}
                           className="mt-1"
                         />
                       </div>
@@ -229,7 +484,6 @@ export default function Researcher() {
               <button
                 type="button"
                 className="btn btn-primary"
-                // data-bs-dismiss="modal"
                 onClick={save}
               >
                 บันทึก
@@ -268,9 +522,10 @@ export default function Researcher() {
                 </span>
                 <input
                   type="text"
-                  onChange={(e) => searchData(e.target.value)}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="form-control"
-                  placeholder="ค้นหาผู้ใช้"
+                  placeholder="ค้นหาผู้ใช้ด้วยชื่อ นามสกุล อีเมล หรือตำแหน่งทางวิชาการ"
                 />
               </div>
             </div>

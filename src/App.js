@@ -5,16 +5,10 @@ import AppRouting from "./Routers";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router } from "react-router-dom";
 import SearchPage from "./Pages/SearchPage";
-import { AuthProvider } from "react-auth-kit";
+import { AuthProvider } from "./authentication/auth-context";
 function App() {
   return (
-    <AuthProvider
-      authType={"cookie"}
-      authName={"_auth"}
-      cookieDomain={window.location.hostname}
-      cookieSecure={window.location.protocol === "https:"}
-      refreshToken
-    >
+    <AuthProvider>
       <Router>
         <ToastContainer />
         <Header />

@@ -9,7 +9,7 @@ import RankingPerYear from "../Pages/Presents/RankingPerYear";
 import TrendByYear from "../Pages/Presents/TrendByYear";
 import TypeOfResearch from "../Pages/Presents/TypeOfResearch";
 import Users from "../Pages/UsersManage/Users";
-import { PrivateRoute } from "react-auth-kit";
+import Profile from "../Pages/UsersManage/Profile";
 // function PrivateRoute({ children }) {
 //   return JSON.parse(localStorage.getItem('token')) !== null?children:<Redirect to="/login"/>
 // }
@@ -46,8 +46,14 @@ function AppRouting() {
       <Route path="/UsersManage/Researcher">
         <Users />
       </Route>
-      <PrivateRoute path="/getAll" component={SearchByResearch} loginPath="/login">
-      </PrivateRoute>
+      {/* <PrivateRoute
+        path="/getAll"
+        component={SearchByResearch}
+        loginPath="/login"
+      ></PrivateRoute> */}
+      <Route path="/Users/Profile">
+        <Profile />
+      </Route>
     </Switch>
   );
 }

@@ -12,17 +12,17 @@ export default function TypeOfResearch() {
     borderWidth: 3,
     title: {
       text: "จำนวนประเภทงานวิจัย",
-      fontFamily: "Kanit",
+      fontFamily: "Prompt",
       horizontalAlign: "left",
       padding: 15,
     },
     subtitles: [
       {
-        fontFamily: "Kanit",
+        fontFamily: "Prompt",
         wrap: true,
         text: "53 งานวิจัยทั้งหมด",
         verticalAlign: "center",
-        fontSize: 20,
+        fontSize: 18,
         dockInsidePlotArea: true,
       },
     ],
@@ -101,8 +101,7 @@ export default function TypeOfResearch() {
       payload: { navbar: ["/Presents", "/TypeOfResearch"] },
     });
   });
-  useEffect(()=>{
-  },[filterState])
+  useEffect(() => {}, [filterState]);
   //End UseEffect
   return (
     <div className="container-xl">
@@ -143,7 +142,12 @@ export default function TypeOfResearch() {
                       {renderYear}
                     </select>
                     <div className="row" hidden={!filterState.useYear}>
-                      <YearRange onChange={({startYear,endYear})=>setFilterState({...filterState,startYear,endYear})} value={initialFilterState} />
+                      <YearRange
+                        onChange={({ startYear, endYear }) =>
+                          setFilterState({ ...filterState, startYear, endYear })
+                        }
+                        value={initialFilterState}
+                      />
                     </div>
                   </div>
                   <div className="mt-3">

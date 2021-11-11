@@ -4,8 +4,11 @@ import signinSVG from "../Assets/images/undraw_Pie_chart_re_bgs8.svg";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { useAuth } from "../authentication/auth-context";
+
 export default function HomePage() {
   const dispatch = useDispatch();
+  const { hasLogin } = useAuth();
 
   useEffect(() => {
     dispatch({ type: "SET_DATA", payload: { navbar: ["/HomePage"] } });
@@ -94,14 +97,17 @@ export default function HomePage() {
                 หรือเพื่อนำเสนอข้อมูลแก่ผู้บริหาร
               </p>
               <div className="empty-action">
-                <Link to="/login" className="btn btn-primary">
-                  <i className="fas fa-sign-in-alt me-2" />
-                  เข้าสู่ระบบ
-                </Link>
-                <Link to="/Presents/Dashboard" className="btn btn-primary">
-                  <i className="fas fa-sign-in-alt me-2" />
-                  กระดานข้อมูล
-                </Link>
+                {hasLogin ? (
+                  <Link to="/Presents/Dashboard" className="btn btn-primary">
+                    <i className="fas fa-sign-in-alt me-2" />
+                    กระดานข้อมูล
+                  </Link>
+                ) : (
+                  <Link to="/login" className="btn btn-primary">
+                    <i className="fas fa-sign-in-alt me-2" />
+                    เข้าสู่ระบบ
+                  </Link>
+                )}
               </div>
             </div>
           </div>
