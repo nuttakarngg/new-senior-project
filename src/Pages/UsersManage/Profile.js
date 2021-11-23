@@ -5,12 +5,9 @@ import { useAuth } from "../../authentication/auth-context";
 import { useForm } from "react-hook-form";
 import "../../index.css";
 import { getAllBranch } from "../../services/branch.service";
-import { addResearch } from "../../services/research.service";
+import { addResearch, getResearchById } from "../../services/research.service";
 import { editProfile } from "../../services/user.service";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
 export default function Profile() {
-
   const dispatch = useDispatch();
   const { user } = useAuth();
   const [data, setData] = useState({});
@@ -20,7 +17,7 @@ export default function Profile() {
   const [image, setImage] = useState("/img/no-user.jpg");
   const closeModalRef = useRef();
   const [branchData, setBranchData] = useState([]);
-  const [research, setResearch] = useState({});
+  const [researchList, setResearchList] = useState([]);
   const [editUser, setEditUser] = useState({
     fullNameTH: false,
     fullNameEN: false,
@@ -30,16 +27,20 @@ export default function Profile() {
     email: false,
     expertOf: false,
   });
-  const validationSchema = Yup.object().shape({
-    researchName: Yup.string().required("จำเป็นต้องกรอก"),
-  });
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  const fetchResearchList = () => {
+    getResearchById(data.id).then((result) => {
+      if (result.status === 200) {
+        console.log(result.data)
+        setResearchList(result.data.data);
+      }
+    });
+  };
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm(formOptions);
+  } = useForm();
   function _renderBranchOption(item, idx) {
     return (
       <option key={idx} value={item.id}>
@@ -49,10 +50,12 @@ export default function Profile() {
   }
 
   const _handleSave = () => {
-    handleSubmit((data) => console.log(data));
-    console.log(errors,watch('researchName'));
-    return null;
-    addResearch(research).then((result) => console.log(result));
+    addResearch(watch()).then((result) => {
+      if (result.status === 200) {
+        toast.success("เพิ่มข้อมูลงานวิจัยสำเร็จ");
+        closeModalRef.current.click();
+      }
+    });
   };
   async function fetchBranch() {
     const branch = await getAllBranch();
@@ -69,6 +72,9 @@ export default function Profile() {
       }
     });
   };
+  useEffect(() => {
+    fetchResearchList();
+  }, [data]);
   const _fetchUser = (callback) => {
     user().then(async (result) => {
       if (result.data.status === 200) {
@@ -82,6 +88,7 @@ export default function Profile() {
   };
   useEffect(() => {
     _fetchUser();
+
     dispatch({
       type: "SET_DATA",
       payload: { navbar: ["/"] },
@@ -89,10 +96,10 @@ export default function Profile() {
   }, []);
   const _mapResearch = (item, index) => {
     return (
-      <div className="card-table-row ">
+      <div className="card-table-row " key={index}>
         <span>
-          {index + 1}. 2565 :
-          โครงการปัจจัยการศึกษาและวิเคราะห์แรงกดผิวสัมผัสในการจับวัตถุสำหรับแขนเทียมโดยใช้ปัญญาประดิษฐ์
+          {index + 1}. {item.researchBudgetYear} :
+          {item.researchNameTH}
         </span>
         <span className="bg-danger">หัวหน้าโครงการ</span>
       </div>
@@ -584,12 +591,13 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div
+        <form
           className="modal modal-blur fade"
           id="modal-add-research"
           tabIndex="-1"
           role="dialog"
           aria-hidden="true"
+          onSubmit={handleSubmit(_handleSave)}
         >
           <div
             className="modal-dialog modal-dialog-centered modal-lg"
@@ -611,17 +619,17 @@ export default function Profile() {
                     <label className="form-label">ชื่องานวิจัย (ภาษาไทย)</label>
                     <input
                       type="text"
-                      {...register("researchName")}
-                      className="form-control"
-                      // onChange={(e) =>
-                      //   setResearch({
-                      //     ...research,
-                      //     researchNameTH: e.target.value,
-                      //   })
-                      // }
-                      // value={research.researchNameTH}
+                      {...register("researchNameTH", { required: true })}
+                      className={
+                        "form-control " +
+                        (errors?.researchNameTH && "is-invalid")
+                      }
                     />
-                      {errors.firstName?.message}
+                    {errors?.researchNameTH?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มชื่อโปรเจค (ภาษาไทย)
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">
@@ -629,71 +637,82 @@ export default function Profile() {
                     </label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchNameEN: e.target.value,
-                        })
+                      {...register("researchNameEN", { required: true })}
+                      className={
+                        "form-control " +
+                        (errors?.researchNameEN && "is-invalid")
                       }
-                      value={research.researchNameEN}
                     />
+                    {errors?.researchNameEN?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มชื่อโปรเจค (ภาษาอังกฤษ)
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">ผลของงานวิจัย</label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchResult: e.target.value,
-                        })
+                      {...register("researchResult", { required: true })}
+                      className={
+                        "form-control " +
+                        (errors?.researchResult && "is-invalid")
                       }
-                      value={research.researchResult}
                     />
+                    {errors?.researchResult?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มผลของงานวิจัย
+                      </div>
+                    )}
                   </div>
+
                   <div className="mb-3">
                     <label className="form-label">ประเภทของงบประมาณ</label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchBudgetType: e.target.value,
-                        })
+                      {...register("researchBudgetType", { required: true })}
+                      className={
+                        "form-control " +
+                        (errors?.researchBudgetType && "is-invalid")
                       }
-                      value={research.researchBudgetType}
                     />
+                    {errors?.researchBudgetType?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มประเภทของงบประมาณ
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">ประเภทของทุนวิจัย</label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchScholarOwner: e.target.value,
-                        })
+                      {...register("researchScholarOwner", { required: true })}
+                      className={
+                        "form-control " +
+                        (errors?.researchScholarOwner && "is-invalid")
                       }
-                      value={research.researchScholarOwner}
                     />
+                    {errors?.researchScholarOwner?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มประเภทของทุนวิจัย
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">ชื่อโครงการของทุนวิจัย</label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchScholarName: e.target.value,
-                        })
+                      {...register("researchScholarName", { required: true })}
+                      className={
+                        "form-control " +
+                        (errors?.researchScholarName && "is-invalid")
                       }
-                      value={research.researchScholarName}
                     />
+                    {errors?.researchScholarName?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มชื่อโครงการของทุนวิจัย
+                      </div>
+                    )}
                   </div>
                   <div className="row">
                     <div className="col-6">
@@ -702,17 +721,19 @@ export default function Profile() {
                         <div className="input-group">
                           <input
                             type="text"
-                            className="form-control"
                             placeholder="0.00"
-                            onChange={(e) =>
-                              setResearch({
-                                ...research,
-                                researchBudget: e.target.value,
-                              })
+                            {...register("researchBudget", { required: true })}
+                            className={
+                              "form-control " +
+                              (errors?.researchBudget && "is-invalid")
                             }
-                            value={research.researchBudget}
                           />
                           <span className="input-group-text">บาท</span>
+                          {errors?.researchBudget?.type === "required" && (
+                            <div class="invalid-feedback">
+                              กรุณาเพิ่มจำนวนงบประมาณ
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -724,17 +745,22 @@ export default function Profile() {
                         <div className="input-group">
                           <input
                             type="text"
-                            className="form-control"
                             placeholder="0.00"
-                            onChange={(e) =>
-                              setResearch({
-                                ...research,
-                                researchBudgetResearcher: e.target.value,
-                              })
+                            {...register("researchBudgetResearcher", {
+                              required: true,
+                            })}
+                            className={
+                              "form-control " +
+                              (errors?.researchBudgetResearcher && "is-invalid")
                             }
-                            value={research.researchBudgetResearcher}
                           />
                           <span className="input-group-text">บาท</span>
+                          {errors?.researchBudgetResearcher?.type ===
+                            "required" && (
+                            <div class="invalid-feedback">
+                              กรุณาเพิ่มจำนวนงบประมาณ
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -746,17 +772,23 @@ export default function Profile() {
                         <div className="input-group">
                           <input
                             type="text"
-                            className="form-control"
                             placeholder="0.00"
-                            onChange={(e) =>
-                              setResearch({
-                                ...research,
-                                researchBudgetAssResearcher: e.target.value,
-                              })
+                            {...register("researchBudgetAssResearcher", {
+                              required: true,
+                            })}
+                            className={
+                              "form-control " +
+                              (errors?.researchBudgetAssResearcher &&
+                                "is-invalid")
                             }
-                            value={research.researchBudgetAssResearcher}
                           />
                           <span className="input-group-text">บาท</span>
+                          {errors?.researchBudgetAssResearcher?.type ===
+                            "required" && (
+                            <div class="invalid-feedback">
+                              กรุณาเพิ่มจำนวนงบประมาณสำหรับผู้ช่วย
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -766,17 +798,21 @@ export default function Profile() {
                         <div className="input-group">
                           <input
                             type="text"
-                            className="form-control"
                             placeholder="0.00"
-                            onChange={(e) =>
-                              setResearch({
-                                ...research,
-                                researchBudgetETC: e.target.value,
-                              })
+                            {...register("researchBudgetETC", {
+                              required: true,
+                            })}
+                            className={
+                              "form-control " +
+                              (errors?.researchBudgetETC && "is-invalid")
                             }
-                            value={research.researchBudgetETC}
                           />
                           <span className="input-group-text">บาท</span>
+                          {errors?.researchBudgetETC?.type === "required" && (
+                            <div class="invalid-feedback">
+                              กรุณาเพิ่มจำนวนงบประมาณอื่นๆ
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -787,15 +823,19 @@ export default function Profile() {
                         <label className="form-label">วันที่เริ่มวัจัย</label>
                         <input
                           type="date"
-                          className="form-control"
-                          onChange={(e) =>
-                            setResearch({
-                              ...research,
-                              researchStartDate: e.target.value,
-                            })
+                          {...register("researchStartDate", {
+                            required: true,
+                          })}
+                          className={
+                            "form-control " +
+                            (errors?.researchStartDate && "is-invalid")
                           }
-                          value={research.researchStartDate}
                         />
+                        {errors?.researchStartDate?.type === "required" && (
+                          <div class="invalid-feedback">
+                            กรุณาเพิ่มวันที่เริ่มวัจัย
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="col-4">
@@ -805,15 +845,19 @@ export default function Profile() {
                         </label>
                         <input
                           type="date"
-                          className="form-control"
-                          onChange={(e) =>
-                            setResearch({
-                              ...research,
-                              researchEnddate: e.target.value,
-                            })
+                          {...register("researchEnddate", {
+                            required: true,
+                          })}
+                          className={
+                            "form-control " +
+                            (errors?.researchEnddate && "is-invalid")
                           }
-                          value={research.researchEnddate}
                         />
+                        {errors?.researchEnddate?.type === "required" && (
+                          <div class="invalid-feedback">
+                            กรุณาเพิ่มวันที่สิ้นสุดการวิจัย
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="col-4">
@@ -821,15 +865,19 @@ export default function Profile() {
                         <label className="form-label">ปีงบประมาณ</label>
                         <input
                           type="text"
-                          className="form-control"
-                          onChange={(e) =>
-                            setResearch({
-                              ...research,
-                              researchBudgetYear: e.target.value,
-                            })
+                          {...register("researchBudgetYear", {
+                            required: true,
+                          })}
+                          className={
+                            "form-control " +
+                            (errors?.researchBudgetYear && "is-invalid")
                           }
-                          value={research.researchBudgetYear}
                         />
+                        {errors?.researchBudgetYear?.type === "required" && (
+                          <div class="invalid-feedback">
+                            กรุณาเพิ่มปีงบประมาณ
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -837,56 +885,61 @@ export default function Profile() {
                     <label className="form-label">ประเภทของงานวิจัย</label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchType: e.target.value,
-                        })
+                      {...register("researchType", {
+                        required: true,
+                      })}
+                      className={
+                        "form-control " + (errors?.researchType && "is-invalid")
                       }
-                      value={research.researchType}
                     />
+                    {errors?.researchType?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มประเภทของงานวิจัย
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">วันที่มีการเซ็นสัญญา</label>
                     <input
                       type="date"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchContractDateSign: e.target.value,
-                        })
+                      {...register("researchContractDateSign", {
+                        required: true,
+                      })}
+                      className={
+                        "form-control " +
+                        (errors?.researchContractDateSign && "is-invalid")
                       }
-                      value={research.researchContractDateSign}
                     />
+                    {errors?.researchContractDateSign?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มวันที่มีการเซ็นสัญญา
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">สถานะงานวิจัย</label>
                     <input
                       type="text"
-                      className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchStatus: e.target.value,
-                        })
+                      {...register("researchStatus", {
+                        required: true,
+                      })}
+                      className={
+                        "form-control " +
+                        (errors?.researchStatus && "is-invalid")
                       }
-                      value={research.researchStatus}
                     />
+                    {errors?.researchStatus?.type === "required" && (
+                      <div class="invalid-feedback">
+                        กรุณาเพิ่มสถานะงานวิจัย
+                      </div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label">บริษัทที่ร่วมการวิจัย</label>
                     <input
                       type="text"
                       className="form-control"
-                      onChange={(e) =>
-                        setResearch({
-                          ...research,
-                          researchJoinCompany: e.target.value,
-                        })
-                      }
-                      value={research.researchJoinCompany}
+                      {...register("researchJoinCompany")}
                     />
                   </div>
                 </div>
@@ -900,17 +953,13 @@ export default function Profile() {
                 >
                   ปิด
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={_handleSave}
-                >
+                <button type="submit" className="btn btn-primary">
                   บันทึก
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </form>
         <div className="col-md-9 col-12 my-2">
           <div className="card animate__animated animate__slideInRight">
             <div className="card-header bg-primary d-flex align-items-center justify-content-between">
@@ -925,7 +974,7 @@ export default function Profile() {
               </button>
             </div>
             <div className="card-body p-0">
-              {Array.from({ length: 100 }, () => 0).map((item, index) =>
+              {researchList.map((item, index) =>
                 _mapResearch(item, index)
               )}
             </div>
