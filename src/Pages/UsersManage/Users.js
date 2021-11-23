@@ -45,12 +45,12 @@ export default function Researcher() {
     }).then((result) => {
       if (result.isConfirmed === true) {
         let iserror = {};
-        if (!userData.firstName) {
+        if (!userData.firstNameTH) {
           iserror.firstNameError = true;
         } else {
           iserror.firstNameError = false;
         }
-        if (!userData.lastName) {
+        if (!userData.lastNameTH) {
           iserror.lastNameError = true;
         } else {
           iserror.lastNameError = false;
@@ -178,8 +178,8 @@ export default function Researcher() {
   function insertUser() {
     setUserData({
       ...userData,
-      firstName: "",
-      lastName: "",
+      firstNameTH: "",
+      lastNameTH: "",
       email: "",
       password: "",
     });
@@ -272,7 +272,7 @@ export default function Researcher() {
       <td>{idx + 1}</td>
       <td className="text-center">{item.ac_position || "-"}</td>
       <td className="text-center">
-        {`${item.firstName} ${item.lastName}` || "-"}
+        {`${item.firstNameTH} ${item.lastNameTH}` || "-"}
       </td>
       <td className="text-center">{item.branch?.name_th || "-"}</td>
       <td className="text-center">{item.email || "-"}</td>
@@ -303,7 +303,7 @@ export default function Researcher() {
       type: "SET_DATA",
       payload: { navbar: ["/UsersManage", "/Users"] },
     });
-  },[]);
+  }, []);
   // useEffect(() => {
   //   setCurrentPage(1);
   // }, [data]);
@@ -370,10 +370,10 @@ export default function Researcher() {
                           onChange={(e) =>
                             setUserData({
                               ...userData,
-                              firstName: e.target.value,
+                              firstNameTH: e.target.value,
                             })
                           }
-                          value={userData.firstName}
+                          value={userData.firstNameTH}
                           className={
                             "form-control " +
                             (hasError.firstNameError ? "is-invalid" : "")
@@ -387,10 +387,10 @@ export default function Researcher() {
                           onChange={(e) =>
                             setUserData({
                               ...userData,
-                              lastName: e.target.value,
+                              lastNameTH: e.target.value,
                             })
                           }
-                          value={userData.lastName}
+                          value={userData.lastNameTH}
                           className={
                             "form-control " +
                             (hasError.lastNameError ? "is-invalid" : "")
@@ -481,11 +481,7 @@ export default function Researcher() {
               >
                 ปิด
               </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={save}
-              >
+              <button type="button" className="btn btn-primary" onClick={save}>
                 บันทึก
               </button>
             </div>

@@ -172,3 +172,17 @@ body {
   cursor: pointer;
 }
 
+.image-upload > input
+{
+    display: none;
+}
+
+.image-upload img
+{
+    cursor: pointer;
+}
+
+.image-upload{
+  display: flex;
+  justify-content: center;
+}
