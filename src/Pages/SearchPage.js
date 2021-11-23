@@ -10,25 +10,29 @@ export default function SearchPage() {
       payload: "",
     });
   }
-  const listRender = Lists.map((list,idx)=>(
+  const listRender = Lists.map((list, idx) => (
     <div className="col-md-3 my-2" key={idx}>
-             {list.path? <Link
-                to={list.path}
-                className="card btn-outline-azure"
-                onClick={resetNavbar}
-              >
-                <div className="card-body">{list.name}</div>
-              </Link>: <a
-                href={list.url}
-                target="_blank"
-                rel="noreferrer"
-                className="card btn-outline-azure"
-                onClick={resetNavbar}
-              >
-                <div className="card-body">{list.name}</div>
-              </a>}
-            </div>
-  ))
+      {list.path ? (
+        <Link
+          to={list.path}
+          className="card btn-outline-azure"
+          onClick={resetNavbar}
+        >
+          <div className="card-body">{list.name}</div>
+        </Link>
+      ) : (
+        <a
+          href={list.url}
+          target="_blank"
+          rel="noreferrer"
+          className="card btn-outline-azure"
+          onClick={resetNavbar}
+        >
+          <div className="card-body">{list.name}</div>
+        </a>
+      )}
+    </div>
+  ));
   if (!keyword) return <></>;
   return (
     <div
@@ -37,9 +41,7 @@ export default function SearchPage() {
     >
       <div className="card bg-light">
         <div className="card-body">
-          <div className="row">
-            {listRender}
-          </div>
+          <div className="row">{listRender}</div>
         </div>
       </div>
     </div>

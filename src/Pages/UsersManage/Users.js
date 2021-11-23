@@ -303,7 +303,7 @@ export default function Researcher() {
       type: "SET_DATA",
       payload: { navbar: ["/UsersManage", "/Users"] },
     });
-  },[]);
+  }, []);
   // useEffect(() => {
   //   setCurrentPage(1);
   // }, [data]);
@@ -481,11 +481,7 @@ export default function Researcher() {
               >
                 ปิด
               </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={save}
-              >
+              <button type="button" className="btn btn-primary" onClick={save}>
                 บันทึก
               </button>
             </div>
