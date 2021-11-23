@@ -67,6 +67,15 @@ function Navbar() {
                 <div className="dropdown-menu">
                   <div className="dropdown-menu-columns">
                     <div className="dropdown-menu-column">
+                    <Link
+                        className={
+                          "dropdown-item " +
+                          (navbar[1] === "/RecommendResearcher" ? "active" : "")
+                        }
+                        to="/Database/RecommendResearcher"
+                      >
+                        แนะนำผู้วิจัย
+                      </Link>
                       <Link
                         className={
                           "dropdown-item " +

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function CardResearch() {
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
@@ -21,18 +23,19 @@ export default function CardResearch() {
             <p>
               <b>ประเภทงานวิจัย</b> การวิจัยเพื่อถ่ายทอดเทคโนโลยี
             </p>
-            <p>
+            <p></p>
               <b>งบประมาณ</b> 588900.00
             </p>
           </div>
         </div>
       </div>
-      <button
+      <Link
+        to="/Database/ReseachDetails"
         type="button"
         className="btn btn-outline-azure btn-sm card-footer border-azure"
       >
         ข้อมูลเพิ่มเติม
-      </button>
+      </Link>
     </div>
   );
 }

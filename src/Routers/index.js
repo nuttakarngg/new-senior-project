@@ -10,6 +10,9 @@ import TrendByYear from "../Pages/Presents/TrendByYear";
 import TypeOfResearch from "../Pages/Presents/TypeOfResearch";
 import Users from "../Pages/UsersManage/Users";
 import Profile from "../Pages/UsersManage/Profile";
+import RecommendResearcher from "../Pages/Recommend/RecommendResearcher";
+import ReseachDetails from "../Pages/UsersManage/ResearchDetails";
+
 // function PrivateRoute({ children }) {
 //   return JSON.parse(localStorage.getItem('token')) !== null?children:<Redirect to="/login"/>
 // }
@@ -53,6 +56,12 @@ function AppRouting() {
       ></PrivateRoute> */}
       <Route path="/Users/Profile">
         <Profile />
+      </Route>
+      <Route path="/Database/RecommendResearcher">
+        <RecommendResearcher />
+      </Route>
+      <Route path="/Database/ReseachDetails">
+        <ReseachDetails />
       </Route>
     </Switch>
   );

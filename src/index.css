@@ -24,6 +24,7 @@ body {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
 .hover-warning:hover {
   background-color: #f76707;
   color: white !important;
@@ -88,6 +89,7 @@ body {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   to {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
@@ -99,6 +101,7 @@ body {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   to {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
@@ -123,6 +126,7 @@ body {
   width: 100% !important;
   border-radius: 10px;
 }
+
 .profile-input {
   border: 0;
   outline: 0;
@@ -131,6 +135,7 @@ body {
   margin-left: 1px;
   margin-right: 1px;
 }
+
 .profile-name-edit {
   height: 100%;
   width: 80%;
@@ -151,6 +156,7 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
 .card-table-row span:nth-child(2) {
   color: white;
   border-radius: 20px;
@@ -162,6 +168,7 @@ body {
   padding: 1px 0;
 }
 
-.card-table-row:hover{
+.card-table-row:hover {
   cursor: pointer;
 }
+
