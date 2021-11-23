@@ -30,7 +30,7 @@ export default function Profile() {
   const fetchResearchList = () => {
     getResearchById(data.id).then((result) => {
       if (result.status === 200) {
-        console.log(result.data)
+        console.log(result.data);
         setResearchList(result.data.data);
       }
     });
@@ -98,8 +98,7 @@ export default function Profile() {
     return (
       <div className="card-table-row " key={index}>
         <span>
-          {index + 1}. {item.researchBudgetYear} :
-          {item.researchNameTH}
+          {index + 1}. {item.researchBudgetYear} :{item.researchNameTH}
         </span>
         <span className="bg-danger">หัวหน้าโครงการ</span>
       </div>
@@ -365,6 +364,7 @@ export default function Profile() {
                             setData({ ...data, branchId: e.target.value })
                           }
                         >
+                          <option>โปรดเลือกสาขา</option>
                           {branchData.map(_renderBranchOption)}
                         </select>
                         {/* <input
@@ -974,8 +974,12 @@ export default function Profile() {
               </button>
             </div>
             <div className="card-body p-0">
-              {researchList.map((item, index) =>
-                _mapResearch(item, index)
+              {researchList.length === 0 ? (
+                <div className="card-body">
+                  <p>ยังไม่มีผลงาน</p>
+                </div>
+              ) : (
+                researchList.map((item, index) => _mapResearch(item, index))
               )}
             </div>
           </div>
