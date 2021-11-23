@@ -4,6 +4,7 @@ const Role = require("./role");
 const user_role = require("./association/user_role");
 const Branch = require("./branch");
 const Research = require("./research");
+const user_research = require("./association/user_research");
 class User extends Model {}
 User.init(
   {
@@ -29,7 +30,7 @@ User.init(
       unique: true,
     },
     branchId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     password: {
@@ -66,7 +67,8 @@ User.init(
 );
 
 User.Role = User.belongsToMany(Role, { through: user_role });
-Role.User = Role.belongsToMany(User, { through: user_role });
+// Role.User = Role.belongsToMany(User, { through: user_role });
+User.Research = User.belongsToMany(Research, { through: user_research });
 User.Branch = User.belongsTo(Branch);
 Research.User = Research.belongsTo(User, { foreignKey: "researcherId" });
 module.exports = User;
