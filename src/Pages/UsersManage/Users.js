@@ -90,6 +90,8 @@ export default function Researcher() {
                 toast.success("เพิ่มข้อมูลผู้ใช้สำเร็จ");
               } else if (result.data.status === 400) {
                 toast.error("เกิดข้อผิดพลาด อีเมลนี้อาจถูกใช้แล้ว");
+              }else{
+                toast.error("เกิดข้อผิดพลาดบางอย่าง");
               }
             })
             .finally(() => {
