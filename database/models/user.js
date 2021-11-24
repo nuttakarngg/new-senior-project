@@ -45,6 +45,7 @@ User.init(
     phone: {
       type: DataTypes.STRING,
       allowNull: true,
+      defaultValue: "",
     },
     ac_position: {
       type: DataTypes.STRING,

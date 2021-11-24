@@ -46,7 +46,4 @@ router.get("/", async (request, response) => {
   }
 });
 
-router.get('/test',(req,res)=>{
-  
-})
 module.exports = router;
