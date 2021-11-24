@@ -56,8 +56,8 @@ function Header() {
                   style={{ backgroundImage: `url(${UnknowPersonImage})` }}
                 ></span>
                 <div className="d-none d-xl-block ps-2">
-                  <div>{`${userData.firstName || ""} ${
-                    userData.lastName || ""
+                  <div>{`${userData.firstNameTH || ""} ${
+                    userData.lastNameTH || ""
                   }`}</div>
                   <div className="mt-1 small text-muted">
                     วิทยาการคอมพิวเตอร์

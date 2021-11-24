@@ -525,6 +525,68 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
+                <h4>หน่วยงาน</h4>
+                <div className="d-flex mb-2">
+                  <div>
+                    {!editUser.institution ? (
+                      <div>
+                        <span>{data.institution || "-"}</span>
+                        <button
+                          type="button"
+                          className="button-profile"
+                          onClick={() =>
+                            setEditUser({ ...editUser, institution: true })
+                          }
+                        >
+                          <i className="fas fa-pen text-warning ms-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="text"
+                          className="w-100  profile-input"
+                          value={data.institution}
+                          onChange={(e) => {
+                            setData({
+                              ...data,
+                              institution: e.target.value,
+                            });
+                          }}
+                        />
+
+                        <button
+                          type="button"
+                          className="button-profile"
+                          onClick={() =>
+                            updateUser({ institution: data.institution }, () =>
+                              setEditUser({ ...editUser, institution: false })
+                            )
+                          }
+                        >
+                          <i
+                            className="fas fa-save text-success "
+                            style={{ fontSize: 17 }}
+                          />
+                        </button>
+                        <button
+                          type="button"
+                          className="button-profile"
+                          onClick={() =>
+                            _fetchUser(() =>
+                              setEditUser({ ...editUser, expertOf: false })
+                            )
+                          }
+                        >
+                          <i
+                            className="fas fa-times text-danger"
+                            style={{ fontSize: 17 }}
+                          />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <h4>สาขาที่มีความชำนานการ</h4>
                 <div className="d-flex mb-2">
                   <div>
