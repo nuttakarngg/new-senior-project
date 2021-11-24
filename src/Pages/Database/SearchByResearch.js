@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import CardResearch from "../../Components/Database/CardResearch";
+import axios from "axios";
+import { getResearchAll } from "../../services/research.service";
 
 export default function Search() {
   // Initial Variable
+  const [research, setResearch] = useState([]);
+
   const dispatch = useDispatch();
   const initialFilterState = {
     keyword: "",
@@ -11,9 +15,12 @@ export default function Search() {
     endYear: "2005",
     useYear: false,
     branchList: [],
-    researchType:''
+    researchType: "",
   };
-  const researchTypeList = ["การวิจัยเพื่อสร้างองค์ความรู้","การวิจัยเพื่อถ่ายทอดเทคโนโลยี"]
+  const researchTypeList = [
+    "การวิจัยเพื่อสร้างองค์ความรู้",
+    "การวิจัยเพื่อถ่ายทอดเทคโนโลยี",
+  ];
   const [filterState, setFilterState] = useState(initialFilterState);
   const YearList = [
     2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
@@ -30,7 +37,6 @@ export default function Search() {
     "สาขา 7",
     "สาขา 8",
     "สาขา 9",
-
   ];
   // End Initial Variable
   // Handle Event
@@ -57,13 +63,20 @@ export default function Search() {
     ));
   const renderBranchList = BranchList.map((branch, idx) => (
     <label className="form-check" key={idx}>
-      <input className="form-check-input" onChange={handleCheckboxChange} value={branch} type="checkbox" />
+      <input
+        className="form-check-input"
+        onChange={handleCheckboxChange}
+        value={branch}
+        type="checkbox"
+      />
       <span className="form-check-label">{branch}</span>
     </label>
   ));
-  const renderResearchType = researchTypeList.map((researchType,idx)=>(
-    <option key={idx} value={researchType}>{researchType}</option>
-  ))
+  const renderResearchType = researchTypeList.map((researchType, idx) => (
+    <option key={idx} value={researchType}>
+      {researchType}
+    </option>
+  ));
 
   // End RenderState
 
@@ -85,6 +98,18 @@ export default function Search() {
       });
     }
   }, [filterState]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getResearchAll();
+        setResearch(response.data.data);
+        // console.log(response.data);
+      } catch (err) {}
+    };
+    fetchData();
+  }, []);
+
   // End UseEffect
   return (
     <div className="container-xl">
@@ -173,14 +198,18 @@ export default function Search() {
               </div>
               <div className="mt-3">
                 <label className="form-label">ประเภทงานวิจัย</label>
-                <select type="text" className="form-select" onChange={(event) => {
-                        setFilterState({
-                          ...filterState,
-                          researchType: event.target.value,
-                        });
-                      }}>
+                <select
+                  type="text"
+                  className="form-select"
+                  onChange={(event) => {
+                    setFilterState({
+                      ...filterState,
+                      researchType: event.target.value,
+                    });
+                  }}
+                >
                   <option value="">ทั้งหมด</option>
-                 {renderResearchType}
+                  {renderResearchType}
                 </select>
               </div>
               <div className="mt-3">
@@ -191,13 +220,9 @@ export default function Search() {
           </div>
         </div>
         <div className="col-md-8 col-sm-12">
-          <CardResearch />
-          <CardResearch />
-          <CardResearch />
-          <CardResearch />
-          <CardResearch />
-          <CardResearch />
-          <CardResearch />
+          {research.map((item, idx) => (
+            <CardResearch key={idx} {...item} />
+          ))}
         </div>
       </div>
     </div>

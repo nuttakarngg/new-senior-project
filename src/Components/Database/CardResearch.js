@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
-export default function CardResearch() {
+export default function CardResearch(props) {
+  console.log(props)
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
       <div className="card-header bg-primary text-white">

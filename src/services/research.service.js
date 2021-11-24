@@ -16,3 +16,11 @@ export const getResearchById = async (id) => {
     });
   });
 };
+
+export const getResearchAll = async () => {
+  return authication().then(async () => {
+    return await axios.get(`${url}/`, {
+      headers: { token },
+    });
+  });
+};
