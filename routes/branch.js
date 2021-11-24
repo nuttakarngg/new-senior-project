@@ -17,6 +17,7 @@ router.post("/", async (request, response) => {
     const newBranch = await Branch.create(request.body);
     return response.json({ status: 200, data: newBranch });
   } catch (e) {
+    console.log(e);
     return response.json({ status: 500, error: "network error." });
   }
 });

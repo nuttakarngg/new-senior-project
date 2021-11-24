@@ -18,11 +18,11 @@ User.init(
     },
     firstNameEN: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     lastNameEN: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,

@@ -122,6 +122,7 @@ router.post("/", async (request, response) => {
   } catch (e) {
     if (e.name === "SequelizeUniqueConstraintError")
       return response.json({ error: "email is duplicate.", status: 400 });
+    console.log(e);
     return response.json({ error: "Network Error", status: 500 });
   }
 });

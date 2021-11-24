@@ -5,13 +5,22 @@ const {user_research} = require('../database/models/association/user_research')
 const router = express.Router();
 const { authentication } = require("../middlewares/authentication");
 router.use(authentication);
+
+
+
 router.get("/", async (request, response) => {
-  return response.json({
-    status: 200,
-    data: await Research.findAll({
-      include: User,
-    }),
-  });
+  try{
+    return response.json({
+      status: 200,
+      data: await Research.findAll({
+        include: User,
+      }),
+    });
+  }catch(e){
+    return response.status(500).json({
+      error: "network error!",
+    });
+  }
 });
 router.post("/", (request, response) => {
   try {
@@ -31,6 +40,8 @@ router.post("/", (request, response) => {
     });
   }
 });
+
+
 router.get("/getResearchById/:id", async (request, response) => {
   try {
     const id = request.params.id;
