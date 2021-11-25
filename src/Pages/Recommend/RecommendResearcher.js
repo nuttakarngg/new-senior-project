@@ -103,8 +103,8 @@ export default function RecommendResearcher() {
     <div className="container-xl">
       <div className="page-header d-print-none mt-3 ">
         <div className="row align-items-center">
-          <div className="col">
-            <h2 className="page-title">แนะนำนักวิจัย</h2>
+          <div className="col mb-3">
+            <h2 className="page-title">แนะนำผู้เชี่ยวชาญ</h2>
           </div>
         </div>
         <div className="row">

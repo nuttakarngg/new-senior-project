@@ -3,6 +3,7 @@ import { token } from "../authentication";
 import environment from "../environment";
 import axios from "axios";
 const url = `${environment.apiURL}/research`;
+
 export const addResearch = async (research) => {
   return authication().then(async () => {
     return await axios.post(`${url}/`, { ...research }, { headers: { token } });
@@ -17,9 +18,10 @@ export const getResearchById = async (id) => {
   });
 };
 
-export const getResearchAll = async () => {
+export const getResearchAll = async (filterState) => {
   return authication().then(async () => {
     return await axios.get(`${url}/`, {
+      params : filterState,
       headers: { token },
     });
   });

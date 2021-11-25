@@ -3,10 +3,12 @@ import { useDispatch } from "react-redux";
 import CardResearch from "../../Components/Database/CardResearch";
 import axios from "axios";
 import { getResearchAll } from "../../services/research.service";
+import { getAllBranch } from "../../services/branch.service";
 
 export default function Search() {
   // Initial Variable
   const [research, setResearch] = useState([]);
+  const [branch, setBranch] = useState([]);
 
   const dispatch = useDispatch();
   const initialFilterState = {
@@ -15,9 +17,9 @@ export default function Search() {
     endYear: "2005",
     useYear: false,
     branchList: [],
-    researchType: "",
+    researchResult: "",
   };
-  const researchTypeList = [
+  const researchResultList = [
     "การวิจัยเพื่อสร้างองค์ความรู้",
     "การวิจัยเพื่อถ่ายทอดเทคโนโลยี",
   ];
@@ -27,17 +29,7 @@ export default function Search() {
     2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997,
     1996,
   ];
-  const BranchList = [
-    "สาขา 1",
-    "สาขา 2",
-    "สาขา 3",
-    "สาขา 4",
-    "สาขา 5",
-    "สาขา 6",
-    "สาขา 7",
-    "สาขา 8",
-    "สาขา 9",
-  ];
+
   // End Initial Variable
   // Handle Event
   const handleCheckboxChange = (event) => {
@@ -61,24 +53,30 @@ export default function Search() {
         {year}
       </option>
     ));
-  const renderBranchList = BranchList.map((branch, idx) => (
+  const renderBranchList = branch.map((branch, idx) => (
     <label className="form-check" key={idx}>
       <input
         className="form-check-input"
         onChange={handleCheckboxChange}
-        value={branch}
+        value={branch.id}
         type="checkbox"
       />
-      <span className="form-check-label">{branch}</span>
+      <span className="form-check-label">{branch.name_th}</span>
     </label>
   ));
-  const renderResearchType = researchTypeList.map((researchType, idx) => (
-    <option key={idx} value={researchType}>
-      {researchType}
+  const renderResearchResult = researchResultList.map((researchResult, idx) => (
+    <option key={idx} value={researchResult}>
+      {researchResult}
     </option>
   ));
 
   // End RenderState
+
+  const fetchBranch = async () => {
+    getAllBranch().then((result) => {
+      setBranch(result.data.data);
+    });
+  };
 
   // UseEffect
   useEffect(() => {
@@ -97,17 +95,18 @@ export default function Search() {
         endYear: tempStartYear,
       });
     }
+    fetchReseach();
   }, [filterState]);
-
+  const fetchReseach = async () => {
+    try {
+      const response = await getResearchAll(filterState);
+      setResearch(response.data.data);
+      // console.log(response.data);
+    } catch (err) {}
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getResearchAll();
-        setResearch(response.data.data);
-        // console.log(response.data);
-      } catch (err) {}
-    };
-    fetchData();
+    fetchReseach();
+    fetchBranch();
   }, []);
 
   // End UseEffect
@@ -197,19 +196,19 @@ export default function Search() {
                 </div>
               </div>
               <div className="mt-3">
-                <label className="form-label">ประเภทงานวิจัย</label>
+                <label className="form-label">ผลของการวิจัย</label>
                 <select
                   type="text"
                   className="form-select"
                   onChange={(event) => {
                     setFilterState({
                       ...filterState,
-                      researchType: event.target.value,
+                      researchResult: event.target.value,
                     });
                   }}
                 >
                   <option value="">ทั้งหมด</option>
-                  {renderResearchType}
+                  {renderResearchResult}
                 </select>
               </div>
               <div className="mt-3">

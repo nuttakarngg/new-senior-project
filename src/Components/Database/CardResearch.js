@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 
 export default function CardResearch(props) {
-  console.log(props)
+  console.log(props);
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
-      <div className="card-header bg-primary text-white">
+      <div
+        style={{ fontSize: "18px" }}
+        className="card-header bg-primary text-white"
+      >
         ระบบแนะนำผู้เชี่ยวชาญ ด้วยเทคนิคการทำเหมืองข้อมูล
       </div>
       <div className="card-body">
@@ -22,7 +25,7 @@ export default function CardResearch(props) {
           </div>
           <div className="col-md-6">
             <p>
-              <b>ประเภทงานวิจัย</b> การวิจัยเพื่อถ่ายทอดเทคโนโลยี
+              <b>ผลของการวิจัย</b> การวิจัยเพื่อถ่ายทอดเทคโนโลยี
             </p>
             <p>
               <b>งบประมาณ</b> 588900.00

@@ -1,7 +1,7 @@
 export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_position ,institution ,expertOf}) {
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
-      <div className="card-header bg-primary text-white">
+      <div style={{fontSize:'18px'}} className="card-header bg-primary text-white">
         {firstNameTH} {lastNameTH}
       </div>
       <div className="card-body">
