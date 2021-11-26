@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function CardResearch(props) {
   console.log(props);
+  
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
       <div
