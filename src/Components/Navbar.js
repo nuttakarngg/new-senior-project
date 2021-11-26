@@ -127,7 +127,7 @@ function Navbar() {
                 <div className="dropdown-menu">
                   <div className="dropdown-menu-columns">
                     <div className="dropdown-menu-column">
-                      <Link
+                      {/* <Link
                         className={
                           "dropdown-item " +
                           (navbar[1] === "/Dashboard" ? "active" : "")
@@ -135,7 +135,7 @@ function Navbar() {
                         to="/Presents/Dashboard"
                       >
                         กระดานข้อมูล
-                      </Link>
+                      </Link> */}
                       <Link
                         className={
                           "dropdown-item " +

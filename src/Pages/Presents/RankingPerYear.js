@@ -2,49 +2,50 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Bar } from "react-chartjs-2";
 import YearRange from "../../Components/YearRange";
+import { getAllBranch } from "../../services/branch.service";
+import { getPricePerYear } from "../../services/data.service";
 export default function Dashboard() {
   //  Initial Variable
   const initialFilterState = {
     keyword: "",
-    startYear: "2000",
-    endYear: "2005",
+    startYear: "2555",
+    endYear: "2565",
     useYear: false,
     branchList: [],
     researchType: "",
-    year: 2000,
+    year: 2555,
   };
   const YearList = [
-    2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
-    2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997,
-    1996,
+    2555, 2556, 2557, 2558, 2559, 2560, 2561, 2562, 2563, 2564, 2565,
   ];
+  const [branchScore, setBranchScore] = useState([]);
   const [filterState, setFilterState] = useState(initialFilterState);
   const dispatch = useDispatch();
-  const BranchList = [
-    "สาขา 1",
-    "สาขา 2",
-    "สาขา 3",
-    "สาขา 4",
-    "สาขา 5",
-    "สาขา 6",
-    "สาขา 7",
-    "สาขา 8",
-    "สาขา 9",
-  ];
+  const [BranchList, setBranchList] = useState([]);
+  const fetchBranch = () => {
+    getAllBranch().then((result) => {
+      if (result.status === 200) {
+        setBranchList(result.data.data);
+      }
+    });
+  };
+  const fetchRanking = () => {
+    getPricePerYear(filterState).then((result) => {
+      if (result.status === 200) {
+        setBranchScore(result.data.data);
+      }
+    });
+  };
   const data = {
-    labels: filterState.branchList,
+    labels: branchScore.map((item) => item.name_th),
     datasets: [
       {
-        data: Array.from({ length: filterState.branchList.length }, () =>
-          Math.floor(Math.random() * 800000)
-        ),
-        backgroundColor: Array.from(
-          { length: filterState.branchList.length },
-          () => "#" + Math.floor(Math.random() * 16777215).toString(16)
-        ),
+        data: branchScore.map((item) => item.total),
+        backgroundColor: BranchList.map((item) => item.color),
       },
     ],
   };
+
   const options = {
     plugins: {
       legend: {
@@ -77,10 +78,10 @@ export default function Dashboard() {
       <input
         className="form-check-input"
         onChange={handleCheckboxChange}
-        value={branch}
+        value={branch.id}
         type="checkbox"
       />
-      <span className="form-check-label">{branch}</span>
+      <span className="form-check-label">{branch.name_th}</span>
     </label>
   ));
 
@@ -98,7 +99,13 @@ export default function Dashboard() {
       payload: { navbar: ["/Presents", "/RankingPerYear"] },
     });
   });
-  useEffect(() => {}, [filterState]);
+  useEffect(() => {
+    fetchBranch();
+  }, []);
+  useEffect(() => {
+    fetchRanking();
+    console.log(filterState);
+  }, [filterState]);
   //End UseEffect
   return (
     <div className="container-xl">
@@ -206,7 +213,6 @@ export default function Dashboard() {
                     </tbody>
                   </table>
                 </div>
-               
               </div>
             </div>
           </div>

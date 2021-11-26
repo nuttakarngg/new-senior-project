@@ -1,35 +1,41 @@
 import { Link } from "react-router-dom";
 
-export default function CardResearch(props) {
-  console.log(props);
-  
+export default function CardResearch({
+  researchNameTH,
+  researchBudgetYear,
+  user,
+  researchBudgetType,
+  researchResult,
+  researchBudget,
+}) {
+  console.log(user);
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
       <div
         style={{ fontSize: "18px" }}
         className="card-header bg-primary text-white"
       >
-        ระบบแนะนำผู้เชี่ยวชาญ ด้วยเทคนิคการทำเหมืองข้อมูล
+        {researchNameTH}
       </div>
       <div className="card-body">
         <div className="row px-5">
           <div className="col-md-6">
             <p>
-              <b>ปีงบประมาณ</b> 2565
+              <b>ปีงบประมาณ</b> {researchBudgetYear}
             </p>
             <p>
-              <b>สาขาที่เกี่ยวข้อง</b> วิทยาศาสตร์และเทคโนโลยี
+              <b>สาขาที่เกี่ยวข้อง</b> {user?.branch?.name_th}
             </p>
             <p>
-              <b>ประเภทงบประมาณ</b> งบประมาณภายใน
+              <b>ประเภทงบประมาณ</b> {researchBudgetType}
             </p>
           </div>
           <div className="col-md-6">
             <p>
-              <b>ผลของการวิจัย</b> การวิจัยเพื่อถ่ายทอดเทคโนโลยี
+              <b>ผลของการวิจัย</b> {researchResult}
             </p>
             <p>
-              <b>งบประมาณ</b> 588900.00
+              <b>งบประมาณ</b> {researchBudget}
             </p>
           </div>
         </div>

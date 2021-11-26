@@ -5,9 +5,7 @@ export default function YearRange(props) {
   const { startYear, endYear } = value;
   const [filterState, setFilterState] = useState({ startYear, endYear });
   const YearList = [
-    2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
-    2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997,
-    1996,
+    2555, 2556, 2557, 2558, 2559, 2560, 2561, 2562, 2563, 2564, 2565,
   ];
   const renderYearStart = YearList.sort().map((year, idx) => (
     <option key={idx} value={year}>

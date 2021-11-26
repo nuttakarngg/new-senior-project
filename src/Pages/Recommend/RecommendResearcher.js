@@ -41,7 +41,7 @@ const TagsInput = (props) => {
       event.target.value = "";
     }
   };
-  return (
+return (
     <div className="tags-input">
       <ul id="tags">
         {tags.map((tag, index) => (
@@ -147,7 +147,7 @@ export default function RecommendResearcher() {
                   <div className="col-md-6">
                     <TagsInput
                       selectedTags={selectedTags}
-                      tags={["Nodejs", "MongoDB"]}
+                      tags={[]}
                     />
                   </div>
                 </div>
