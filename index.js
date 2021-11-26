@@ -12,6 +12,7 @@ server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(logger);
+
 server.use("/api", require("./routes"));
 
 server.listen(PORT, HOST, async () => {

@@ -9,26 +9,21 @@ const { authentication } = require("../middlewares/authentication");
 router.use(authentication);
 const Branch = require("../database/models/branch");
 const { Op } = require("sequelize");
+const Role = require("../database/models/role");
 
 router.get("/", async (request, response) => {
   try {
     const { keyword, startYear, endYear, useYear, branchList, researchResult } =
       request.query;
-    console.log(
-      keyword,
-      startYear,
-      endYear,
-      useYear,
-      branchList,
-      researchResult
-    );
     const research = await Research.findAll({
       include: [
         {
           model: User,
+          required: true,
           include: [
             {
               model: Branch,
+              required: true,
               where:
                 branchList?.length > 0
                   ? {
@@ -36,19 +31,32 @@ router.get("/", async (request, response) => {
                     }
                   : null,
             },
+            Role,
           ],
         },
       ],
+
       where: {
         [Op.and]: {
           [Op.or]: {
             researchNameTH: {
               [Op.like]: `%${keyword}%`,
             },
+            researchNameEN: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
           researchResult: {
             [Op.like]: researchResult === "" ? "%%" : `%${researchResult}%`,
           },
+          researchBudgetYear:
+            useYear == "true"
+              ? {
+                  [Op.between]: [startYear, endYear],
+                }
+              : {
+                  [Op.between]: [0, 9999],
+                },
         },
       },
     });

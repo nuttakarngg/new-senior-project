@@ -14,8 +14,10 @@ Branch.init(
       allowNull: false,
       unique: true,
     },
+    color: {
+      type: DataTypes.STRING,
+    },
   },
   { sequelize, modelName: "branch", timestamps: false }
 );
 module.exports = Branch;
-  

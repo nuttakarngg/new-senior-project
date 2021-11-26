@@ -7,7 +7,6 @@ const router = express.Router();
 router.get("/", async (request, response) => {
   try {
     const { keyword, branchList, acPosition } = request.query;
-    console.log(keyword, branchList, "ac" + acPosition);
     const researcher = await User.findAll({
       include: [
         {
@@ -49,7 +48,7 @@ router.get("/", async (request, response) => {
             },
           },
           ac_position: {
-            [Op.like]: acPosition === "" ? "%ศาสตราจารย์%" : `%${acPosition}%`,
+            [Op.like]: acPosition === "" ? "%%" : `%${acPosition}%`,
           },
         },
       },
