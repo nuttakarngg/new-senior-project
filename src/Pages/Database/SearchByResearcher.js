@@ -15,7 +15,7 @@ export default function Search() {
     branchList: [],
   };
   const [filterState, setFilterState] = useState(initialFilterState);
-  const AcademiaPositionList = ["ศาสตราจารย์", "ผู้ช่วยศาสตราจารย์"];
+  const AcademiaPositionList = ["ศาสตราจารย์","รองศาสตราจารย์", "ผู้ช่วยศาสตราจารย์","ไม่มี"];
   // End Initial Variable
   // Handle Event
   const handleCheckboxChange = (event) => {

@@ -13,8 +13,8 @@ export default function Search() {
   const dispatch = useDispatch();
   const initialFilterState = {
     keyword: "",
-    startYear: "2000",
-    endYear: "2005",
+    startYear: "2550",
+    endYear: "2566",
     useYear: false,
     branchList: [],
     researchResult: "",
@@ -25,9 +25,8 @@ export default function Search() {
   ];
   const [filterState, setFilterState] = useState(initialFilterState);
   const YearList = [
-    2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
-    2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997,
-    1996,
+    2550, 2551, 2552, 2553, 2554, 2555, 2556, 2557, 2558, 2559, 2560, 2561,
+    2562, 2563, 2564, 2565, 2566,
   ];
 
   // End Initial Variable
@@ -99,7 +98,10 @@ export default function Search() {
   }, [filterState]);
   const fetchReseach = async () => {
     try {
-      const response = await getResearchAll(filterState);
+      const response = await getResearchAll({
+        ...filterState,
+        useYear: filterState.useYear.toString(),
+      });
       setResearch(response.data.data);
       // console.log(response.data);
     } catch (err) {}
