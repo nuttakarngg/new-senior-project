@@ -97,10 +97,10 @@ export default function Profile() {
   const _mapResearch = (item, index) => {
     return (
       <div className="card-table-row " key={index}>
-        <span>
+        <span className="col-md-10">
           {index + 1}. {item.researchBudgetYear} :{item.researchNameTH}
         </span>
-        <span className="bg-danger">หัวหน้าโครงการ</span>
+        <span className="bg-danger my-auto">หัวหน้าโครงการ</span>
       </div>
     );
   };

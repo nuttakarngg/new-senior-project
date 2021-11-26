@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 export default function CardResearch({
+  researchId,
   researchNameTH,
   researchBudgetYear,
   user,
@@ -41,7 +42,7 @@ export default function CardResearch({
         </div>
       </div>
       <Link
-        to="/Database/ReseachDetails"
+        to={`/Database/ReseachDetails/${researchId}`}
         type="button"
         className="btn btn-outline-azure btn-sm card-footer border-azure"
       >

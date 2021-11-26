@@ -60,7 +60,7 @@ function AppRouting() {
       <Route path="/Database/RecommendResearcher">
         <RecommendResearcher />
       </Route>
-      <Route path="/Database/ReseachDetails">
+      <Route path="/Database/ReseachDetails/:id">
         <ReseachDetails />
       </Route>
     </Switch>
