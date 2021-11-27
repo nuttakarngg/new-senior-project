@@ -1,11 +1,21 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { useAuth } from "../authentication/auth-context";
+import { useEffect, useState } from "react";
 
 function Navbar() {
   let navbar = useSelector((state) => state.navbar) || [];
   let keyword = useSelector((state) => state.nav_keyword) || "";
+  const [authen, setAuthen] = useState({});
+  const auth = useAuth();
   const dispatch = useDispatch();
+  useEffect(async () => {
+    const authenti = await auth.user();
+    if (authenti.status === 200) {
+      setAuthen(authenti.data.data);
+    }
+  }, []);
   const searchNav = (e) => {
     dispatch({
       type: "SET_KEYWORD",
@@ -67,15 +77,21 @@ function Navbar() {
                 <div className="dropdown-menu">
                   <div className="dropdown-menu-columns">
                     <div className="dropdown-menu-column">
-                    <Link
-                        className={
-                          "dropdown-item " +
-                          (navbar[1] === "/RecommendResearcher" ? "active" : "")
-                        }
-                        to="/Database/RecommendResearcher"
-                      >
-                        แนะนำผู้วิจัย
-                      </Link>
+                      {auth.hasLogin &&
+                        authen.roles?.filter((role) => role.id === 3).length >
+                          0 && (
+                          <Link
+                            className={
+                              "dropdown-item " +
+                              (navbar[1] === "/RecommendResearcher"
+                                ? "active"
+                                : "")
+                            }
+                            to="/Database/RecommendResearcher"
+                          >
+                            แนะนำผู้วิจัย
+                          </Link>
+                        )}
                       <Link
                         className={
                           "dropdown-item " +
@@ -106,28 +122,33 @@ function Navbar() {
                   </div>
                 </div>
               </li>
-              <li
-                className={
-                  "nav-item dropdown " +
-                  (navbar[0] === "/Presents" ? "active" : "")
-                }
-              >
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#navbar-base"
-                  data-bs-toggle="dropdown"
-                  role="button"
-                  aria-expanded="false"
-                >
-                  <span className="nav-link-icon d-md-none d-lg-inline-block">
-                    <i className="fas fa-chart-line" />
-                  </span>
-                  <span className="nav-link-title">ระบบนำเสนอผู้บริหาร</span>
-                </a>
-                <div className="dropdown-menu">
-                  <div className="dropdown-menu-columns">
-                    <div className="dropdown-menu-column">
-                      {/* <Link
+
+              {auth.hasLogin &&
+                authen.roles?.filter((role) => role.id === 4).length > 0 && (
+                  <li
+                    className={
+                      "nav-item dropdown " +
+                      (navbar[0] === "/Presents" ? "active" : "")
+                    }
+                  >
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#navbar-base"
+                      data-bs-toggle="dropdown"
+                      role="button"
+                      aria-expanded="false"
+                    >
+                      <span className="nav-link-icon d-md-none d-lg-inline-block">
+                        <i className="fas fa-chart-line" />
+                      </span>
+                      <span className="nav-link-title">
+                        ระบบนำเสนอผู้บริหาร
+                      </span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          {/* <Link
                         className={
                           "dropdown-item " +
                           (navbar[1] === "/Dashboard" ? "active" : "")
@@ -136,73 +157,77 @@ function Navbar() {
                       >
                         กระดานข้อมูล
                       </Link> */}
-                      <Link
-                        className={
-                          "dropdown-item " +
-                          (navbar[1] === "/RankingPerYear" ? "active" : "")
-                        }
-                        to="/Presents/RankingPerYear"
-                      >
-                        อันดับงบประมาณรายได้ต่อปี
-                      </Link>
-                      <Link
-                        className={
-                          "dropdown-item " +
-                          (navbar[1] === "/TrendByYear" ? "active" : "")
-                        }
-                        to="/Presents/TrendByYear"
-                      >
-                        แนวโน้มของงบประมาณ
-                      </Link>
-                      <Link
-                        className={
-                          "dropdown-item " +
-                          (navbar[1] === "/TypeOfResearch" ? "active" : "")
-                        }
-                        to="/Presents/TypeOfResearch"
-                      >
-                        จำนวนประเภทงานวิจัย
-                      </Link>
+                          <Link
+                            className={
+                              "dropdown-item " +
+                              (navbar[1] === "/RankingPerYear" ? "active" : "")
+                            }
+                            to="/Presents/RankingPerYear"
+                          >
+                            อันดับงบประมาณรายได้ต่อปี
+                          </Link>
+                          <Link
+                            className={
+                              "dropdown-item " +
+                              (navbar[1] === "/TrendByYear" ? "active" : "")
+                            }
+                            to="/Presents/TrendByYear"
+                          >
+                            แนวโน้มของงบประมาณ
+                          </Link>
+                          <Link
+                            className={
+                              "dropdown-item " +
+                              (navbar[1] === "/TypeOfResearch" ? "active" : "")
+                            }
+                            to="/Presents/TypeOfResearch"
+                          >
+                            จำนวนประเภทงานวิจัย
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </li>
-              <li
-                className={
-                  "nav-item dropdown " +
-                  (navbar[0] === "/UsersManage" ? "active" : "")
-                }
-              >
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#navbar-base"
-                  data-bs-toggle="dropdown"
-                  role="button"
-                  aria-expanded="false"
-                >
-                  <span className="nav-link-icon d-md-none d-lg-inline-block">
-                    <i className="fas fa-users" />
-                  </span>
-                  <span className="nav-link-title">จัดการผู้ใช้งาน</span>
-                </a>
-                <div className="dropdown-menu">
-                  <div className="dropdown-menu-columns">
-                    <div className="dropdown-menu-column">
-                      <Link
-                        className={
-                          "dropdown-item " +
-                          (navbar[1] === "/Users" ? "active" : "")
-                        }
-                        to="/UsersManage/Researcher"
-                      >
-                        จัดการผู้ใช้งาน
-                      </Link>
+                  </li>
+                )}
+              {auth.hasLogin &&
+                authen.roles?.filter((role) => role.id === 1).length > 0 && (
+                  <li
+                    className={
+                      "nav-item dropdown " +
+                      (navbar[0] === "/UsersManage" ? "active" : "")
+                    }
+                  >
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#navbar-base"
+                      data-bs-toggle="dropdown"
+                      role="button"
+                      aria-expanded="false"
+                    >
+                      <span className="nav-link-icon d-md-none d-lg-inline-block">
+                        <i className="fas fa-users" />
+                      </span>
+                      <span className="nav-link-title">จัดการผู้ใช้งาน</span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          <Link
+                            className={
+                              "dropdown-item " +
+                              (navbar[1] === "/Users" ? "active" : "")
+                            }
+                            to="/UsersManage/Researcher"
+                          >
+                            จัดการผู้ใช้งาน
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </li>
+                  </li>
+              )}
             </ul>
-            <div className="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
+            {/* <div className="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
               <form action="." method="get">
                 <div className="input-icon">
                   <span className="input-icon-addon">
@@ -237,7 +262,7 @@ function Navbar() {
                   />
                 </div>
               </form>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

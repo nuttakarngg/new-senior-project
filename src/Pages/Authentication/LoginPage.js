@@ -5,13 +5,18 @@ import Loading from "../../Components/Loading";
 import { loginService } from "../../services/auth.service";
 
 import isEmail from "isemail";
+import { useAuth } from "../../authentication/auth-context";
 export default function LoginPage() {
   const history = useHistory();
+  const auth = useAuth();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [remember, setRemember] = useState({ status: false });
   const [error, setError] = useState({ isEmail: true, isPassword: true });
   useEffect(() => {
+    if (auth.hasLogin) {
+      history.push("/");
+    }
     if (localStorage.getItem("rememberMe")) {
       const rememberData = JSON.parse(localStorage.getItem("rememberMe"));
       setLoginData({ ...loginData, email: rememberData.email });
@@ -42,10 +47,11 @@ export default function LoginPage() {
           localStorage.removeItem("rememberMe");
         }
         const result = await loginService(loginData);
-        console.log(result)
+        console.log(result);
         if (result.data.status === 200) {
           localStorage.setItem("token", result.data.token);
-          window.dispatchEvent(new Event("storage"));
+          // window.dispatchEvent(new Event("storage"));
+          window.location.reload();
           history.push("/");
         }
       }

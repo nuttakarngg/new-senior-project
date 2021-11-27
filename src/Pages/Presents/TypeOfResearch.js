@@ -2,11 +2,36 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import canvasJs from "../../Libs/canvasjs.react";
 import YearRange from "../../Components/YearRange";
-
+import { getResearchAll } from "../../services/research.service";
+import { getAllBranch } from "../../services/branch.service";
 export default function TypeOfResearch() {
   // Initial Variable
   const CanvasJSChart = canvasJs.CanvasJSChart;
+  const [research, setResearch] = useState([]);
   const dispatch = useDispatch();
+  const [branch, setBranch] = useState([]);
+  const [researchType, setResearchType] = useState([]);
+  const [typeOfResearch, setTypeOfResearch] = useState([]);
+  const fetchResearch = () => {
+    getResearchAll(filterState).then((result) => {
+      if (result.status === 200) {
+        // console.log(result.data);
+        getResearchType();
+        setResearch(result.data.data);
+      }
+    });
+  };
+  const fetchBranch = () => {
+    getAllBranch().then((result) => {
+      if (result.status === 200) {
+        setBranch(result.data.data);
+      }
+    });
+  };
+  useEffect(() => {
+    fetchBranch();
+    fetchResearch();
+  }, []);
   const options = {
     animationEnabled: true,
     borderWidth: 3,
@@ -20,7 +45,7 @@ export default function TypeOfResearch() {
       {
         fontFamily: "Prompt",
         wrap: true,
-        text: "53 งานวิจัยทั้งหมด",
+        text: `${research.length} งานวิจัยทั้งหมด`,
         verticalAlign: "center",
         fontSize: 18,
         dockInsidePlotArea: true,
@@ -34,38 +59,36 @@ export default function TypeOfResearch() {
         indexLabel: "{name}: {y}",
         yValueFormatString: "#,###'%'",
         dataPoints: [
-          { name: "วิจัยเพื่อสร้างองค์ความรู้", y: 34, color: "#4ED8DA" },
-          { name: "วิจัยเพื่อถ่ายทอดเทคโนโลยี", y: 19, color: "#C04DD8" },
+          {
+            name: researchType[0],
+            y: ((typeOfResearch[0] / research.length) * 100).toFixed(2),
+            color: "#4ED8DA",
+          },
+          {
+            name: researchType[1],
+            y: ((typeOfResearch[1] / research.length) * 100).toFixed(2),
+            color: "#C04DD8",
+          },
         ],
       },
     ],
   };
   const initialFilterState = {
     keyword: "",
-    startYear: "2000",
-    endYear: "2005",
+    researchResult: "",
+    startYear: "2550",
+    endYear: "2564",
     useYear: false,
     branchList: [],
     researchType: "",
-    year: 2020,
+    year: 2564,
   };
   const YearList = [
-    2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009,
-    2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997,
-    1996,
+    2565, 2564, 2563, 2562, 2561, 2560, 2559, 2558, 2557, 2556, 2555, 2554,
+    2553, 2552, 2551, 2550,
   ];
   const [filterState, setFilterState] = useState(initialFilterState);
-  const BranchList = [
-    "สาขา 1",
-    "สาขา 2",
-    "สาขา 3",
-    "สาขา 4",
-    "สาขา 5",
-    "สาขา 6",
-    "สาขา 7",
-    "สาขา 8",
-    "สาขา 9",
-  ];
+
   // End initial variable
   // Handle Event
   const handleCheckboxChange = (event) => {
@@ -77,15 +100,15 @@ export default function TypeOfResearch() {
   };
   // End Handle Event
   //   Rander State
-  const renderBranchList = BranchList.map((branch, idx) => (
+  const renderBranchList = branch.map((branch, idx) => (
     <label className="form-check" key={idx}>
       <input
         className="form-check-input"
         onChange={handleCheckboxChange}
-        value={branch}
+        value={branch.id}
         type="checkbox"
       />
-      <span className="form-check-label">{branch}</span>
+      <span className="form-check-label">{branch.name_th}</span>
     </label>
   ));
   const renderYear = YearList.sort().map((year, idx) => (
@@ -93,6 +116,21 @@ export default function TypeOfResearch() {
       {year}
     </option>
   ));
+  const getResearchType = () => {
+    var temp = [];
+    let keys = Array.from(new Set(research.map((item) => item.researchType)));
+    keys.forEach((item, idx) => {
+      temp[idx] = research.reduce(
+        (counter, obj) =>
+          obj.researchType === item ? (counter += 1) : counter,
+        0
+      );
+    });
+    setTypeOfResearch([...temp]);
+    console.log(typeOfResearch);
+    setResearchType([...keys]);
+  };
+
   // End Rander State
   // UseEffect
   useEffect(() => {
@@ -101,7 +139,11 @@ export default function TypeOfResearch() {
       payload: { navbar: ["/Presents", "/TypeOfResearch"] },
     });
   });
-  useEffect(() => {}, [filterState]);
+
+  useEffect(() => {
+    fetchBranch();
+    fetchResearch();
+  }, [filterState]);
   //End UseEffect
   return (
     <div className="container-xl">
@@ -183,14 +225,19 @@ export default function TypeOfResearch() {
                                 className="fa fa-circle"
                                 style={{ color: "#4ED8DA" }}
                               ></i>{" "}
-                              83.6 %
+                              {(
+                                (typeOfResearch[0] / research.length) *
+                                100
+                              ).toFixed(2)}{" "}
+                              %
                             </span>
                             <p className="text-muted">
                               <i
                                 className="fa fa-circle"
                                 style={{ color: "white" }}
                               ></i>{" "}
-                              วิจัยเพื่อสร้างองความรู้
+                              {/* {[1]} */}
+                              {researchType[0]}
                             </p>
                           </div>
                           <div className="">
@@ -199,14 +246,18 @@ export default function TypeOfResearch() {
                                 className="fa fa-circle"
                                 style={{ color: "#C04DD8" }}
                               ></i>{" "}
-                              16.4 %
+                              {(
+                                (typeOfResearch[1] / research.length) *
+                                100
+                              ).toFixed(2)}{" "}
+                              %
                             </span>
                             <p className="text-muted">
                               <i
                                 className="fa fa-circle"
                                 style={{ color: "white" }}
                               ></i>{" "}
-                              วิจัยเพื่อถ่ายทอดเทคโนโลยี
+                              {researchType[1]}
                             </p>
                           </div>
                         </div>

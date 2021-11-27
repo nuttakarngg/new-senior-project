@@ -19,20 +19,27 @@ export default function YearRange(props) {
         {year}
       </option>
     ));
-  function emitvalue(event) {
-    setFilterState({
-      ...filterState,
-      startYear: event.target.value,
-    });
-    if (filterState.startYear > filterState.endYear) {
-      const tempStartYear = filterState.startYear;
-      const tempEndYear = filterState.endYear;
+  function emitvalue(event, type) {
+    if (type == "start") {
       setFilterState({
         ...filterState,
-        startYear: tempEndYear,
-        endYear: tempStartYear,
+        startYear: event.target.value,
+      });
+    } else {
+      setFilterState({
+        ...filterState,
+        endYear: event.target.value,
       });
     }
+    // if (filterState.startYear > filterState.endYear) {
+    //   const tempStartYear = filterState.startYear;
+    //   const tempEndYear = filterState.endYear;
+    //   setFilterState({
+    //     ...filterState,
+    //     startYear: tempEndYear,
+    //     endYear: tempStartYear,
+    //   });
+    // }
     onChange(filterState);
   }
 
@@ -44,7 +51,7 @@ export default function YearRange(props) {
           className="form-select"
           value={filterState.startYear}
           onChange={(event) => {
-            emitvalue(event);
+            emitvalue(event,"start");
           }}
         >
           {renderYearStart}
@@ -56,7 +63,7 @@ export default function YearRange(props) {
           className="form-select"
           value={filterState.endYear}
           onChange={(event) => {
-            emitvalue(event);
+            emitvalue(event,"end");
           }}
         >
           {renderYearEnd}

@@ -24,6 +24,7 @@ function Header() {
   const Logout = () => {
     auth.logout();
     setUserData({});
+    window.location.reload();
   };
   return (
     <header className="navbar navbar-expand-md navbar-light d-print-none">
@@ -65,9 +66,11 @@ function Header() {
                 </div>
               </Link>
               <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <Link to="/Users/Profile" className="dropdown-item">
-                  Profile & account
-                </Link>
+                {userData.roles?.filter((item) => item.id == 2).length > 0 && (
+                  <Link to="/Users/Profile" className="dropdown-item">
+                    Profile & account
+                  </Link>
+                )}
                 <span onClick={Logout} className="dropdown-item">
                   Logout
                 </span>

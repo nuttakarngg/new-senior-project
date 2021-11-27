@@ -98,7 +98,8 @@ export default function HomePage() {
               </p>
               <div className="empty-action">
                 {hasLogin ? (
-                  <Link to="/Presents/Dashboard" className="btn btn-primary">
+                  <Link to="/Presents/RankingPerYear" className="btn btn-primary">
+                  {/* <Link to="/Presents/Dashboard" className="btn btn-primary"> */}
                     <i className="fas fa-sign-in-alt me-2" />
                     กระดานข้อมูล
                   </Link>

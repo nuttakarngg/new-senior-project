@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Bar } from "react-chartjs-2";
+import currency from "currency.js";
 import YearRange from "../../Components/YearRange";
 import { getAllBranch } from "../../services/branch.service";
 import { getPricePerYear } from "../../services/data.service";
@@ -176,44 +177,55 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              <div className="card animate__animated my-3 animate__slideInRight">
-                <div className="card-header bg-primary">
-                  <span className="text-white">
-                    ตารางอันดับงบประมาณรายได้ต่อปี
-                  </span>
-                </div>
+              {branchScore.length > 0 && (
+                <div className="card animate__animated my-3 animate__slideInRight">
+                  <div className="card-header bg-primary">
+                    <span className="text-white">
+                      ตารางอันดับงบประมาณรายได้ต่อปี
+                    </span>
+                  </div>
 
-                <div className="table-responsive">
-                  <table className="table card-table table-vcenter text-nowrap datatable">
-                    <thead>
-                      <tr>
-                        <th className="w-1">No.</th>
-                        <th>ชื่อสาขา</th>
-                        <th>งบประมาณต่อปี</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <span className="text-muted">09</span>
-                        </td>
-                        <td>
-                          <a
-                            href="invoice.html"
-                            className="text-reset"
-                            tabIndex="-1"
-                          >
-                            สาขาวิทยาการคอมพิวเตอร์
-                          </a>
-                        </td>
-                        <td className="text-success">
-                          <i className="fas fa-circle"></i> 510,000 THB
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div className="table-responsive">
+                    <table className="table card-table table-vcenter text-nowrap datatable">
+                      <thead>
+                        <tr>
+                          <th className="w-1">No.</th>
+                          <th>ชื่อสาขา</th>
+                          <th>งบประมาณต่อปี</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {branchScore.length > 0 &&
+                          branchScore.map((item, idx) => (
+                            <tr>
+                              <td>
+                                <span className="text-muted">{idx + 1}</span>
+                              </td>
+                              <td>
+                                <a
+                                  href="invoice.html"
+                                  className="text-reset"
+                                  tabIndex="-1"
+                                >
+                                  {item.name_th}
+                                </a>
+                              </td>
+                              {/* <td className="text-success"> */}
+                              <td className="">
+                                {/* <i className="fas fa-circle"></i>  */}
+                                {/* {currency(item?.total)}{" "} */}
+                                {Intl.NumberFormat("th-TH", {
+                                  style: "currency",
+                                  currency: "THB",
+                                }).format(item.total)}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

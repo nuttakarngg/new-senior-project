@@ -12,6 +12,7 @@
     "axios": "^0.21.4",
     "chart.js": "^3.5.0",
     "classnames": "^2.3.1",
+    "currency.js": "^2.0.4",
     "isemail": "^3.2.0",
     "loadash": "^1.0.0",
     "lodash": "^4.17.21",
