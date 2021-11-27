@@ -13,8 +13,16 @@ const Role = require("../database/models/role");
 
 router.get("/", async (request, response) => {
   try {
-    const { keyword, startYear, endYear, useYear, branchList, researchResult } =
-      request.query;
+    const {
+      keyword,
+      startYear,
+      endYear,
+      useYear,
+      branchList,
+      researchResult,
+      year,
+    } = request.query;
+    console.log(request.query);
     const research = await Research.findAll({
       include: [
         {
@@ -54,6 +62,8 @@ router.get("/", async (request, response) => {
               ? {
                   [Op.between]: [startYear, endYear],
                 }
+              : year
+              ? year
               : {
                   [Op.between]: [0, 9999],
                 },

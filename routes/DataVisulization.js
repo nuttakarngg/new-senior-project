@@ -28,36 +28,6 @@ router.get("/getPricePerYear", async (request, response) => {
       `select sum(r.researchBudget) as total,b.color,b.name_th from research r join users u on u.id = r.researcherId join branches b on u.branchId = b.id where ${clause} GROUP BY u.branchId`,
       { type: QueryTypes.SELECT }
     );
-    // const research = await Research.findAll({
-    //   attributes: [
-    //     // "researchBudget",
-    //     // [sequelize.fn("sum", sequelize.col("researchBudget")), "totalBudget"],
-    //   ],
-    //   include: [
-    //     {
-    //       model: User,
-    //       attributes: ["branchId"],
-    //       group: "branchId",
-    //       required: true,
-    //       where:
-    //         branchList?.length > 0
-    //           ? {
-    //               BranchId: branchList || [],
-    //             }
-    //           : null,
-    //     },
-    //   ],
-    //   where: {
-    //     researchBudgetYear:
-    //       useYear == "true"
-    //         ? {
-    //             [Op.between]: [startYear, endYear],
-    //           }
-    //         : year,
-    //   },
-    //   // group:'branchId'
-
-    // });
     return response.status(200).json({ data: research });
   } catch (e) {
     console.log(e);
@@ -67,4 +37,41 @@ router.get("/getPricePerYear", async (request, response) => {
   }
 });
 
+router.get("/getTrendByYear", async (request, response) => {
+  try {
+    const { branchList, yearList } = request.query;
+    let clause = " AND ";
+    if (branchList && branchList.length > 0) {
+      clause += `u.branchId IN (${branchList.join(",")})`;
+    } else {
+      clause += `1=1`;
+    }
+    let clause2 = " AND ";
+    if (yearList && yearList.length > 0) {
+      clause2 += `r.researchBudgetYear IN (${yearList.join(",")})`;
+    } else {
+      clause2 += `1=1`;
+    }
+    const research = await sequelize.query(
+      `select sum(r.researchBudget) as total,u.branchId,b.*,r.researchBudgetYear from research r join users u on r.researcherId = u.id join branches b on b.id = u.branchId where true ${clause} GROUP BY u.branchId,r.researchBudgetYear order by u.branchId,r.researchBudgetYear ASC`,
+      { type: QueryTypes.SELECT }
+    );
+    return response.status(200).json({ data: research });
+  } catch (e) {
+    console.log(e);
+    return response.status(500).json({
+      error: "network error!",
+    });
+  }
+});
+
+router.get("/getTypeOfResearch", (request, response) => {
+  try {
+  } catch (e) {
+    console.log(e);
+    return response.status(500).json({
+      error: "network error!",
+    });
+  }
+});
 module.exports = router;
