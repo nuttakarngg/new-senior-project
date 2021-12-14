@@ -65,8 +65,9 @@ router.get("/getTrendByYear", async (request, response) => {
   }
 });
 
-router.get("/getTypeOfResearch", (request, response) => {
+router.get("/getTypeOfResearch", async (request, response) => {
   try {
+    let researchType = await Research.findAll();
   } catch (e) {
     console.log(e);
     return response.status(500).json({
@@ -74,4 +75,5 @@ router.get("/getTypeOfResearch", (request, response) => {
     });
   }
 });
+
 module.exports = router;

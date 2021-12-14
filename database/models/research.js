@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../index");
+const Researchs_Researchers = require("./association/researchs_researchers");
 const User = require("./user");
 class Research extends Model {}
 Research.init(
@@ -7,9 +8,6 @@ Research.init(
     researchId: {
       primaryKey: true,
       autoIncrement: true,
-      type: DataTypes.INTEGER,
-    },
-    researcherId: {
       type: DataTypes.INTEGER,
     },
     researchNameTH: {
@@ -83,5 +81,6 @@ Research.init(
   },
   { sequelize, modelName: "research" }
 );
+Research.User = Research.belongsToMany(User, { through: Researchs_Researchers,foreignKey:'researchId' });
 
 module.exports = Research;

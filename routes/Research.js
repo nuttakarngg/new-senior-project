@@ -3,13 +3,15 @@ const Research = require("../database/models/research");
 const User = require("../database/models/user");
 const {
   user_research,
-} = require("../database/models/association/user_research");
+} = require("../database/models/association/researchs_researchers");
 const router = express.Router();
 const { authentication } = require("../middlewares/authentication");
 router.use(authentication);
 const Branch = require("../database/models/branch");
 const { Op } = require("sequelize");
 const Role = require("../database/models/role");
+const Researchs_Researchers = require("../database/models/association/researchs_researchers");
+const req = require("express/lib/request");
 
 router.get("/", async (request, response) => {
   try {
@@ -22,7 +24,6 @@ router.get("/", async (request, response) => {
       researchResult,
       year,
     } = request.query;
-    console.log(request.query);
     const research = await Research.findAll({
       include: [
         {
@@ -87,7 +88,7 @@ router.post("/", (request, response) => {
     console.log(request.user);
     let result = Research.create({
       ...research,
-      researcherId: request.user.id,
+      // researcherId: request.user.id,
     });
     return response.status(200).json({
       status: 200,
@@ -104,10 +105,19 @@ router.get("/getResearchById/:id", async (request, response) => {
   try {
     const id = request.params.id;
     if (id) {
+  
       const research = await Research.findAll({
-        where: {
-          researcherId: id,
-        },
+        // where: {
+        //   researcherId: id,
+        // },
+        include:[
+          {
+            model:User,
+            where:{
+              id:request.params.id
+            }
+          }
+        ]
         // order:
       });
       return response.status(200).json({
