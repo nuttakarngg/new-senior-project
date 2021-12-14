@@ -95,12 +95,13 @@ export default function Profile() {
     });
   }, []);
   const _mapResearch = (item, index) => {
+    console.log(item.users[0].researchs_researchers.gtype);
     return (
       <div className="card-table-row " key={index}>
         <span className="col-md-10">
           {index + 1}. {item.researchBudgetYear} :{item.researchNameTH}
         </span>
-        <span className="bg-danger my-auto">หัวหน้าโครงการ</span>
+        <span className={" my-auto "+item.users[0].researchs_researchers.gtype==='หัวหน้าโครงการวิจัย'?'bg-danger':item.users[0].researchs_researchers.gtype==='ผู้ร่วมโครงการวิจัย'?'bg-danger':'bg-warning'}>{item.users[0].researchs_researchers.gtype}</span>
       </div>
     );
   };
