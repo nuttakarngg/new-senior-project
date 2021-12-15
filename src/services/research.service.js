@@ -26,3 +26,14 @@ export const getResearchAll = async (filterState) => {
     });
   });
 };
+
+
+export const editResearch = async (research) => {
+  return authication().then(async () => {
+    return await axios.put(
+      `${url}/editResearchDetail`,
+      { ...research },
+      { headers: { token: token } }
+    );
+  });
+};

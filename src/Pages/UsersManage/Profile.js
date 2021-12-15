@@ -53,6 +53,7 @@ export default function Profile() {
     addResearch(watch()).then((result) => {
       if (result.status === 200) {
         toast.success("เพิ่มข้อมูลงานวิจัยสำเร็จ");
+        fetchResearchList();
         closeModalRef.current.click();
       }
     });

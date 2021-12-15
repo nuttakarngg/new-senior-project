@@ -17,7 +17,9 @@ export default function TypeOfResearch() {
       if (result.status === 200) {
         // console.log(result.data);
         getResearchType();
+        console.log(result.data.data);
         setResearch(result.data.data);
+        getResearchType();
       }
     });
   };

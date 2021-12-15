@@ -16,7 +16,7 @@ export const getPricePerYear = async (filterState) => {
 export const getTrendByYear = async (filterState, yearList) => {
   return authication().then(async () => {
     return await axios.get(`${url}/getTrendByYear`, {
-      params: { filterState, yearList },
+      params: { ...filterState, yearList },
       headers: { token },
     });
   });

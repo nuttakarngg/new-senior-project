@@ -89,7 +89,7 @@ export default function Researcher() {
                 toast.success("เพิ่มข้อมูลผู้ใช้สำเร็จ");
               } else if (result.data.status === 400) {
                 toast.error("เกิดข้อผิดพลาด อีเมลนี้อาจถูกใช้แล้ว");
-              }else{
+              } else {
                 toast.error("เกิดข้อผิดพลาดบางอย่าง");
               }
             })
@@ -363,9 +363,7 @@ export default function Researcher() {
                           <option value="ผู้ช่วยศาสตราจารย์">
                             ผู้ช่วยศาสตราจารย์
                           </option>
-                          <option value="ไม่มี">
-                            ไม่มี
-                          </option>
+                          <option value="ไม่มี">ไม่มี</option>
                         </select>
                       </div>
                       <div className="col-xl-4 col-sm-12">
@@ -464,14 +462,14 @@ export default function Researcher() {
                           {roleData.map(_renderRoles)}
                         </div>
                       </div>
-                      <div className="col-xl-6 col-sm-4">
+                      {/* <div className="col-xl-6 col-sm-4">
                         <label className="form-label">ทำงาน</label>
                         <Switch
                           onChange={(value) => setStatus(value)}
                           checked={status}
                           className="mt-1"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

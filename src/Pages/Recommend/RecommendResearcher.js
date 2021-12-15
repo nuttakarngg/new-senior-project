@@ -19,13 +19,13 @@ const datatest = [
     id: 3,
     researcherName: "Chaiyapol",
     researcherSurname: "Mahajan",
-    percentage: 20,
+    percentage: 40,
   },
   {
     id: 4,
     researcherName: "Chaiyapol",
     researcherSurname: "Mahajan",
-    percentage: 50,
+    percentage: 20,
   },
 ];
 
