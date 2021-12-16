@@ -21,7 +21,7 @@ export default function ReseachDetails() {
     researchBudgetType: false,
     researchScholarOwner: false,
     researchScholarName: false,
-    researchType: falsecd ,
+    researchType: false,
   });
 
   const fetchReseach = async () => {
@@ -564,8 +564,7 @@ export default function ReseachDetails() {
                               onClick={() =>
                                 updateResearch(
                                   {
-                                    researchType:
-                                      research.researchType,
+                                    researchType: research.researchType,
                                     id: research.researchId,
                                   },
                                   () =>
