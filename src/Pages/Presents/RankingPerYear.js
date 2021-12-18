@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [filterState, setFilterState] = useState(initialFilterState);
   const dispatch = useDispatch();
   const [BranchList, setBranchList] = useState([]);
+  // const [data, setData] = useState({})
   const fetchBranch = () => {
     getAllBranch().then((result) => {
       if (result.status === 200) {
@@ -42,7 +43,7 @@ export default function Dashboard() {
     datasets: [
       {
         data: branchScore.map((item) => item.total),
-        backgroundColor: BranchList.map((item) => item.color),
+        backgroundColor: branchScore.map((item) => item.color),
       },
     ],
   };
@@ -105,7 +106,7 @@ export default function Dashboard() {
   }, []);
   useEffect(() => {
     fetchRanking();
-    console.log(filterState);
+    console.log(data);
   }, [filterState]);
   //End UseEffect
   return (

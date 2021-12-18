@@ -12,6 +12,7 @@ export default function TrendByYear() {
     researchType: "",
     year: 10,
   };
+  
   const YearList = [
     2564, 2563, 2562, 2561, 2560, 2559, 2558, 2557, 2556, 2555, 2554, 2553,
     2552, 2551, 2550,
@@ -34,22 +35,24 @@ export default function TrendByYear() {
   // ),
   const [BranchScore, setBranchScore] = useState({});
   let fetchScore = () => {
-    getTrendByYear(filterState,YearList.splice(0, filterState.year)).then((result) => {
-      if (result.status === 200) {
-        let data = result.data.data;
-        let temp = {};
-        data.forEach((item) => {
-          if (temp[item.name_en] == null) temp[item.name_en] = [];
-          temp[item.name_en].push({
-            year: item.researchBudgetYear,
-            total: item.total,
-            color: item.color,
+    getTrendByYear(filterState, filterState.year).then(
+      (result) => {
+        if (result.status === 200) {
+          let data = result.data.data;
+          let temp = {};
+          data.forEach((item) => {
+            if (temp[item.name_en] == null) temp[item.name_en] = [];
+            temp[item.name_en].push({
+              year: item.researchBudgetYear,
+              total: item.total,
+              color: item.color,
+            });
           });
-        });
-        console.log(temp);
-        setBranchScore(temp);
+          console.log(temp);
+          setBranchScore(temp);
+        }
       }
-    });
+    );
   };
   const mapColor = () => {
     return Object.keys(BranchScore).map((item) => {

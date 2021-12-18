@@ -363,6 +363,9 @@ export default function Researcher() {
                           <option value="ผู้ช่วยศาสตราจารย์">
                             ผู้ช่วยศาสตราจารย์
                           </option>
+                          <option value="อาจารย์">
+                          อาจารย์
+                          </option>
                           <option value="ไม่มี">
                             ไม่มี
                           </option>
