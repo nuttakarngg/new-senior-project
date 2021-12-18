@@ -25,7 +25,7 @@ router.get("/getPricePerYear", async (request, response) => {
       clause += `1=1`;
     }
     const research = await sequelize.query(
-      `select sum(r.researchBudget) as total,b.color,b.name_th from research r join users u on u.id = r.researcherId join branches b on u.branchId = b.id where ${clause} GROUP BY u.branchId`,
+      `select sum(r.researchBudget) as total,b.color,b.name_th from research r join researchs_researchers rr on rr.researchId = r.researchId join users u on u.id = rr.userId join branches b on u.branchId = b.id where ${clause} GROUP BY u.branchId order by sum(r.researchBudget) DESC`,
       { type: QueryTypes.SELECT }
     );
     return response.status(200).json({ data: research });
@@ -39,7 +39,9 @@ router.get("/getPricePerYear", async (request, response) => {
 
 router.get("/getTrendByYear", async (request, response) => {
   try {
-    const { branchList, yearList } = request.query;
+    const { yearList } = request.query;
+    const { branchList } = JSON.parse(request.query.filterState);
+    console.log(branchList);
     let clause = " AND ";
     if (branchList && branchList.length > 0) {
       clause += `u.branchId IN (${branchList.join(",")})`;
@@ -47,13 +49,16 @@ router.get("/getTrendByYear", async (request, response) => {
       clause += `1=1`;
     }
     let clause2 = " AND ";
+    let date = new Date();
     if (yearList && yearList.length > 0) {
-      clause2 += `r.researchBudgetYear IN (${yearList.join(",")})`;
+      clause2 += `r.researchBudgetYear between ${
+        date.getFullYear() + 543 - yearList
+      } and ${date.getFullYear() + 543}`;
     } else {
       clause2 += `1=1`;
     }
     const research = await sequelize.query(
-      `select sum(r.researchBudget) as total,u.branchId,b.*,r.researchBudgetYear from research r join users u on r.researcherId = u.id join branches b on b.id = u.branchId where true ${clause} GROUP BY u.branchId,r.researchBudgetYear order by u.branchId,r.researchBudgetYear ASC`,
+      `select sum(r.researchBudget) as total,u.branchId,b.*,r.researchBudgetYear from research r join researchs_researchers rr on rr.researchId = r.researchId join users u on u.id = rr.userId join branches b on u.branchId = b.id where true ${clause} ${clause2} GROUP BY u.branchId,r.researchBudgetYear order by u.branchId,r.researchBudgetYear ASC`,
       { type: QueryTypes.SELECT }
     );
     return response.status(200).json({ data: research });

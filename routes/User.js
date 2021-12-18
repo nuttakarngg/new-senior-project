@@ -103,6 +103,7 @@ router.put("/:id", async (request, response) => {
     }
     return response.json({ error: "access forbidden", status: 403 });
   } catch (e) {
+    console.log(e);
     return response.json({ error: "Network Error", status: 500 });
   }
 });
