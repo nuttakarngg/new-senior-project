@@ -363,7 +363,12 @@ export default function Researcher() {
                           <option value="ผู้ช่วยศาสตราจารย์">
                             ผู้ช่วยศาสตราจารย์
                           </option>
-                          <option value="ไม่มี">ไม่มี</option>
+                          <option value="อาจารย์">
+                          อาจารย์
+                          </option>
+                          <option value="ไม่มี">
+                            ไม่มี
+                          </option>
                         </select>
                       </div>
                       <div className="col-xl-4 col-sm-12">
