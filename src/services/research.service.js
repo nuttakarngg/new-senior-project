@@ -17,16 +17,22 @@ export const getResearchById = async (id) => {
     });
   });
 };
-
-export const getResearchAll = async (filterState) => {
+export const getResearchByRid = async (id) => {
   return authication().then(async () => {
-    return await axios.get(`${url}/`, {
-      params : filterState,
+    return await axios.get(`${url}/getResearchByRid/${id}`, {
       headers: { token },
     });
   });
 };
 
+export const getResearchAll = async (filterState) => {
+  return authication().then(async () => {
+    return await axios.get(`${url}/`, {
+      params: filterState,
+      headers: { token },
+    });
+  });
+};
 
 export const editResearch = async (research) => {
   return authication().then(async () => {

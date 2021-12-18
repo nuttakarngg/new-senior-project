@@ -15,7 +15,7 @@ export const authication = () => {
     axios
       .get(`${url}/`, { headers: { token: token } })
       .then((result) => {
-        console.log(result.data)
+        // console.log(result.data)
         if (result.data.status === 200) {
           return resolve(result.data.result);
         }

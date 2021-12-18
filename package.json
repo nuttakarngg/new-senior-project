@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chenfengyuan/datepicker": "^1.0.10",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@hookform/resolvers": "^2.8.3",
     "@testing-library/jest-dom": "^5.11.4",
@@ -14,6 +15,7 @@
     "classnames": "^2.3.1",
     "currency.js": "^2.0.4",
     "isemail": "^3.2.0",
+    "jquery": "^3.6.0",
     "loadash": "^1.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",

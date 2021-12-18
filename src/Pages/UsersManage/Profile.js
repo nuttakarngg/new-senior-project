@@ -7,6 +7,8 @@ import "../../index.css";
 import { getAllBranch } from "../../services/branch.service";
 import { addResearch, getResearchById } from "../../services/research.service";
 import { editProfile } from "../../services/user.service";
+import { Link } from 'react-router-dom';
+
 export default function Profile() {
   const dispatch = useDispatch();
   const { user } = useAuth();
@@ -96,14 +98,27 @@ export default function Profile() {
     });
   }, []);
   const _mapResearch = (item, index) => {
+    console.log(item);
     console.log(item.users[0].researchs_researchers.gtype);
     return (
-      <div className="card-table-row " key={index}>
+      <Link style={{textDecoration:"none",color:"black"}} className="card-table-row " key={index} to={`/Database/ReseachDetails/${item.researchId}`}>
         <span className="col-md-10">
           {index + 1}. {item.researchBudgetYear} :{item.researchNameTH}
         </span>
-        <span className={" my-auto "+item.users[0].researchs_researchers.gtype==='หัวหน้าโครงการวิจัย'?'bg-danger':item.users[0].researchs_researchers.gtype==='ผู้ร่วมโครงการวิจัย'?'bg-danger':'bg-warning'}>{item.users[0].researchs_researchers.gtype}</span>
-      </div>
+        <span
+          className={
+            " my-auto " + item.users[0].researchs_researchers.gtype ===
+            "หัวหน้าโครงการวิจัย"
+              ? "bg-danger"
+              : item.users[0].researchs_researchers.gtype ===
+                "ผู้ร่วมโครงการวิจัย"
+              ? "bg-danger"
+              : "bg-warning"
+          }
+        >
+          {item.users[0].researchs_researchers.gtype}
+        </span>
+      </Link>
     );
   };
 
