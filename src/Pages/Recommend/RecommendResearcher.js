@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./Recommend.scss";
 import { useDispatch } from "react-redux";
 
 const datatest = [
@@ -29,39 +28,6 @@ const datatest = [
   },
 ];
 
-const TagsInput = (props) => {
-  const [tags, setTags] = useState(props.tags);
-  const removeTags = (indexToRemove) => {
-    setTags([...tags.filter((_, index) => index !== indexToRemove)]);
-  };
-  const addTags = (event) => {
-    if (event.target.value !== "") {
-      setTags([...tags, event.target.value]);
-      props.selectedTags([...tags, event.target.value]);
-      event.target.value = "";
-    }
-  };
-return (
-    <div className="tags-input">
-      <ul id="tags">
-        {tags.map((tag, index) => (
-          <li key={index} className="tag">
-            <span className="tag-title">{tag}</span>
-            <span className="tag-close-icon" onClick={() => removeTags(index)}>
-              x
-            </span>
-          </li>
-        ))}
-      </ul>
-      <input
-        type="text"
-        onKeyUp={(event) => (event.key === "Enter" ? addTags(event) : null)}
-        placeholder="Press enter to add tags"
-      />
-    </div>
-  );
-};
-
 const checkpercentage = (percentage) => {
   if (percentage > 70) {
     return "text-success";
@@ -82,10 +48,6 @@ export default function RecommendResearcher() {
     });
   });
 
-  const selectedTags = (tags) => {
-    console.log(tags);
-  };
-
   const rendertable = (datatest) => {
     return (
       <tr key={datatest.id}>
@@ -101,6 +63,84 @@ export default function RecommendResearcher() {
 
   return (
     <div className="container-xl">
+      {/* -----------------MODAL----------------------------- */}
+      <div
+        class="modal modal-blur fade"
+        id="modal-simple"
+        tabindex="-1"
+        role="dialog"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">เพิ่มข้อมูลโครงการวิจัย</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">ชื่อโครงการวิจัย</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="example-text-input"
+                  placeholder="กรุณาใส่ชื่อโครงการวิจัย"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">ประเภทงบประมาณ</label>
+                <select class="form-select">
+                  <option value="0" selected>
+                    กรุณาเลือกประเภทงบประมาณ
+                  </option>
+                  <option value="1">งบประมาณภายนอก</option>
+                  <option value="2">งบประมาณภายใน</option>
+                  <option value="3">ทุนส่วนตัว</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">แหล่งทุน</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="example-text-input"
+                  placeholder="กรุณาใส่แหล่งทุน"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">ปีงบประมาณ</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="example-text-input"
+                  placeholder="กรุณาใส่ปีงบประมาณ"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* -----------------MODAL----------------------------- */}
       <div className="page-header d-print-none mt-3 ">
         <div className="row align-items-center">
           <div className="col mb-3">
@@ -110,45 +150,55 @@ export default function RecommendResearcher() {
         <div className="row">
           <div className="col-md-12">
             <div className="card">
-              <div className="card-header bg-primary">
+              <div className="card-header bg-primary d-flex justify-content-between">
                 <span className="text-white">รายละเอียดงานวิจัย</span>
+                <button
+                  href="#"
+                  className="btn btn-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modal-simple"
+                >
+                  <i className="fa fa-plus ms-2 me-2"></i>เพิ่มโครงการวิจัย
+                </button>
               </div>
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-6">
-                    <div class="form-floating mb-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="floatingInput"
-                        placeholder="............."
-                      />
-                      <label for="floatingInput">เจ้าของทุนวิจัย</label>
+                  <div className="col-md-12">
+                    <div class="mb-3">
+                      <div class="form-label">ชื่อโครงการวิจัย</div>
+                      <select class="form-select">
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div class="mb-3">
+                      <label class="form-label">แหล่งทุน</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="floatingInput"
-                        placeholder="............."
+                        name="input-text-scholarowner"
+                        placeholder="กรุณาเลือกชื่อโครงการวิจัย"
+                        disabled
                       />
-                      <label for="floatingInput">ชื่อทุนวิจัย</label>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div class="mb-3">
+                      <label class="form-label">งบประมาณ</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="floatingInput"
-                        placeholder="............."
+                        name="input-text-budget"
+                        placeholder="กรุณาเลือกชื่อโครงการวิจัย"
+                        disabled
                       />
-                      <label for="floatingInput">งบประมาณ</label>
                     </div>
                   </div>
-                  <div className="col-md-6">
-                    <TagsInput
-                      selectedTags={selectedTags}
-                      tags={[]}
-                    />
+                </div>
+                <div className="row">
+                  <div className="col-md-12 d-flex justify-content-center">
+                    <button type="button" className="btn btn-info mb-3 ">
+                      ค้นหา
+                    </button>
                   </div>
                 </div>
                 <div className="row">
