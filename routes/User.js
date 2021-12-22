@@ -44,7 +44,7 @@ router.get("/", async (request, response) => {
 router.get("/:id", async (request, response) => {
   try {
     const { id } = request.params;
-    const users = await User.findOne({ where: { id }, include: Role });
+    const users = await User.findOne({ where: { id }, include: [Role,Branch] });
     return response.json({ data: users, status: 200 });
   } catch (e) {
     return response.json({ error: "Network Error", status: 500 });

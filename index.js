@@ -7,7 +7,7 @@ const logger = require("./middlewares/logger");
 
 const PORT = process.env.PORT || 8080;
 const HOST = process.env.HOST || "localhost";
-
+server.use('/public',express.static("public"));
 server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: false }));

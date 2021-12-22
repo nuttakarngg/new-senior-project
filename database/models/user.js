@@ -63,13 +63,17 @@ User.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   { sequelize, modelName: "user" }
 );
 
 User.Role = User.belongsToMany(Role, { through: user_role });
 // Role.User = Role.belongsToMany(User, { through: user_role });
-// User.Research = User.belongsToMany(Research, { through: user_research });
+// User.Research = User.belongsToMany(Research, { through: user_research });p
 User.Branch = User.belongsTo(Branch);
 // Research.User = Research.belongsTo(User, { foreignKey: "researcherId" });
 module.exports = User;
