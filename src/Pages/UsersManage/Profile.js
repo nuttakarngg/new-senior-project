@@ -7,7 +7,8 @@ import "../../index.css";
 import { getAllBranch } from "../../services/branch.service";
 import { addResearch, getResearchById } from "../../services/research.service";
 import { editProfile } from "../../services/user.service";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { editProfileImage } from "../../services/fileUpload.service";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -80,8 +81,12 @@ export default function Profile() {
   }, [data]);
   const _fetchUser = (callback) => {
     user().then(async (result) => {
-      if (result.data.status === 200) {
+      if (result.status === 200) {
         setData(result.data.data);
+        if (result.data?.data?.image) {
+          console.log("image...");
+          setImage(result.data?.data?.image);
+        }
       }
       await fetchBranch();
       if (callback) {
@@ -98,10 +103,14 @@ export default function Profile() {
     });
   }, []);
   const _mapResearch = (item, index) => {
-    console.log(item);
     console.log(item.users[0].researchs_researchers.gtype);
     return (
-      <Link style={{textDecoration:"none",color:"black"}} className="card-table-row " key={index} to={`/Database/ReseachDetails/${item.researchId}`}>
+      <Link
+        style={{ textDecoration: "none", color: "black" }}
+        className="card-table-row "
+        key={index}
+        to={`/Database/ReseachDetails/${item.researchId}`}
+      >
         <span className="col-md-10">
           {index + 1}. {item.researchBudgetYear} :{item.researchNameTH}
         </span>
@@ -123,8 +132,21 @@ export default function Profile() {
   };
 
   const handleImageProfile = (event) => {
-    let file = event.target.files[0];
-    setImage(file.result);
+    console.log("picture: ", event.target.files);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImage(reader.result);
+    });
+    reader.readAsDataURL(event.target.files[0]);
+    editProfileImage(event.target.files[0]).then(result=>{
+      if(result.status===200){
+        toast.success('แก้ไขข้อมูลสำเร็จ')
+      }else{
+        toast.error('มีข้อผิดพลาดบางอย่าง')
+      }
+    })
+    
+    console.log(image);
   };
   return (
     <div className="container-xl py-4">
@@ -137,7 +159,14 @@ export default function Profile() {
             <div className="card-body">
               <div className="image-upload">
                 <label htmlFor="file-input">
-                  <img src={image} className="img-user-responsive" />
+                  <img
+                    src={
+                      image.startsWith("data")
+                        ? image
+                        : `http://localhost:3001/public/profiles/${image}`
+                    }
+                    className="img-user-responsive"
+                  />
                 </label>
                 <input
                   type="file"
@@ -356,7 +385,7 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
-                <h4>คณะ/หน่วยงาน</h4>
+                <h4>คณะ/สาขา/หน่วยงาน</h4>
                 <div className="d-flex mb-2">
                   <div>
                     {!editUser.branch ? (
@@ -1048,8 +1077,8 @@ export default function Profile() {
                 data-bs-toggle="modal"
                 data-bs-target="#modal-add-research"
               >
+                <i className="fas fa-plus me-2" />
                 เพิ่ม
-                <i className="fas fa-plus ms-2" />
               </button>
             </div>
             <div className="card-body p-0">

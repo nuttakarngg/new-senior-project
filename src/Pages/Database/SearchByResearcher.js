@@ -104,7 +104,7 @@ export default function Search() {
                         keyword: event.target.value,
                       })
                     }
-                  ></input>
+                ></input>
                   <button className="btn btn-outline-secondary" type="button">
                     <i className="fas fa-search" />
                   </button>

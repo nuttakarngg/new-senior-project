@@ -12,6 +12,7 @@ import Users from "../Pages/UsersManage/Users";
 import Profile from "../Pages/UsersManage/Profile";
 import RecommendResearcher from "../Pages/Recommend/RecommendResearcher";
 import ReseachDetails from "../Pages/UsersManage/ResearchDetails";
+import ReseacherDetails from "../Pages/UsersManage/ResearcherDetails";
 
 // function PrivateRoute({ children }) {
 //   return JSON.parse(localStorage.getItem('token')) !== null?children:<Redirect to="/login"/>
@@ -62,6 +63,9 @@ function AppRouting() {
       </Route>
       <Route path="/Database/ReseachDetails/:id">
         <ReseachDetails />
+      </Route>
+      <Route path="/Database/ReseacherDetails/:id">
+        <ReseacherDetails />
       </Route>
     </Switch>
   );

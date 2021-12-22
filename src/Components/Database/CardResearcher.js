@@ -1,4 +1,7 @@
-export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_position ,institution ,expertOf}) {
+import { Link } from "react-router-dom";
+
+export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_position ,institution ,expertOf,id}) {
+  console.log(id);
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
       <div style={{fontSize:'18px'}} className="card-header bg-primary text-white">
@@ -27,12 +30,12 @@ export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_posit
           </div>
         </div>
       </div>
-      <button
+      <Link to={`/Database/ReseacherDetails/${id}`}
         type="button"
         className="btn btn-outline-azure btn-sm card-footer border-azure"
       >
         ข้อมูลเพิ่มเติม
-      </button>
+      </Link>
     </div>
   );
 }
