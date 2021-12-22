@@ -8,6 +8,7 @@ router
   .use("/researcher", require("./Researcher"))
   .use("/research", require("./Research"))
   .use("/branch", require("./branch"))
-  .use("/data", require("./DataVisulization"));
+  .use("/data", require("./DataVisulization"))
+  .use("/upload", require("./fileUpload"));
 
 module.exports = router;
