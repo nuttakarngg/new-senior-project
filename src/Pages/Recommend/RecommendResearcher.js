@@ -1,32 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-
-const datatest = [
-  {
-    id: 1,
-    researcherName: "Chaiyapol",
-    researcherSurname: "Mahajan",
-    percentage: 100,
-  },
-  {
-    id: 2,
-    researcherName: "Chaiyapol",
-    researcherSurname: "Mahajan",
-    percentage: 60,
-  },
-  {
-    id: 3,
-    researcherName: "Chaiyapol",
-    researcherSurname: "Mahajan",
-    percentage: 40,
-  },
-  {
-    id: 4,
-    researcherName: "Chaiyapol",
-    researcherSurname: "Mahajan",
-    percentage: 20,
-  },
-];
+import { lexTo } from "../../services/aiforthai.service";
+import { classify, ranking } from "../../services/recommend.service";
+import { createScholar, getAllScholar } from "../../services/scholar.service";
+import Loading from "../../Components/Loading";
 
 const checkpercentage = (percentage) => {
   if (percentage > 70) {
@@ -40,22 +17,91 @@ const checkpercentage = (percentage) => {
 
 export default function RecommendResearcher() {
   const dispatch = useDispatch();
-
+  const [scholar, setScholar] = useState({});
+  const [scholarList, setScholarList] = useState([]);
+  const [scholarSelected, setScholarSelected] = useState(0);
+  const [label, setLabel] = useState("");
+  const [rankingList, setRankingList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showItem, setShowItem] = useState({
+    scholarBudgetName: null,
+    scholarType: null,
+  });
+  const recommend = () => {
+    setIsLoading(true);
+    ranking(label)
+      .then((result) => {
+        if (result.status === 200) {
+          setRankingList(result.data);
+          console.log(result);
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
   useEffect(() => {
     dispatch({
       type: "SET_DATA",
       payload: { navbar: ["/Database", "/RecommendResearcher"] },
     });
   });
-
-  const rendertable = (datatest) => {
+  useEffect(() => {
+    fetchScholar();
+  }, []);
+  const fetchScholar = () => {
+    getAllScholar().then((result) => {
+      console.log(result.data);
+      if (result.status === 200) {
+        setScholarList(result.data.data);
+      }
+    });
+  };
+  const _recommend = (e) => {
+    setScholarSelected(e.target.value);
+    let scholarItem = scholarList.filter(
+      (item) => item.id == e.target.value
+    )[0];
+    setShowItem({
+      scholarBudgetName: scholarItem?.scholarBudgetName || "",
+      scholarType: scholarItem?.scholarType || "",
+    });
+    classify(e.target.value).then((result) => {
+      if ((result.status = 200)) {
+        setLabel(result.data["prediction(label)"]);
+      }
+    });
+  };
+  const addScholar = () => {
+    lexTo(scholar.scholarName).then((result) => {
+      if (result.status === 200) {
+        let { types, tokens } = result.data;
+        let narr = [];
+        types.forEach((item, index) => {
+          if (item === 1 || (item === 2 && !/\d/.test(tokens[index]))) {
+            narr.push(tokens[index]);
+          }
+        });
+        createScholar({
+          ...scholar,
+          tokens: `|${narr.join("|")}|`,
+        });
+        console.log(`|${narr.join("|")}|`);
+      }
+    });
+  };
+  const rendertable = (idx, datatest) => {
     return (
-      <tr key={datatest.id}>
-        <th scope="row">{datatest.id}</th>
-        <td>{datatest.researcherName}</td>
-        <td>{datatest.researcherSurname}</td>
-        <td className={checkpercentage(datatest.percentage)}>
-          <i className="fa fa-circle"></i> {datatest.percentage} %
+      <tr key={idx}>
+        <th scope="row">{idx + 1}</th>
+        <td>
+          {datatest.user.firstNameTH} {datatest.user.lastNameTH}
+        </td>
+        <td className={checkpercentage(datatest.percent)}>
+          <i className="fa fa-circle"></i> {datatest.percent} %
+        </td>
+        <td>
+          <button className="btn btn-success">
+            <i className="fas fa-share-square"></i>
+          </button>
         </td>
       </tr>
     );
@@ -64,6 +110,7 @@ export default function RecommendResearcher() {
   return (
     <div className="container-xl">
       {/* -----------------MODAL----------------------------- */}
+      <Loading status={isLoading} />
       <div
         class="modal modal-blur fade"
         id="modal-simple"
@@ -92,18 +139,24 @@ export default function RecommendResearcher() {
                   type="text"
                   class="form-control"
                   name="example-text-input"
+                  onChange={(e) => {
+                    setScholar({ ...scholar, scholarName: e.target.value });
+                  }}
                   placeholder="กรุณาใส่ชื่อโครงการวิจัย"
                 />
               </div>
               <div class="mb-3">
                 <label class="form-label">ประเภทงบประมาณ</label>
-                <select class="form-select">
-                  <option value="0" selected>
-                    กรุณาเลือกประเภทงบประมาณ
-                  </option>
-                  <option value="1">งบประมาณภายนอก</option>
-                  <option value="2">งบประมาณภายใน</option>
-                  <option value="3">ทุนส่วนตัว</option>
+                <select
+                  class="form-select"
+                  onChange={(e) => {
+                    setScholar({ ...scholar, scholarType: e.target.value });
+                  }}
+                >
+                  <option selected>กรุณาเลือกประเภทงบประมาณ</option>
+                  <option value="งบประมาณภายนอก">งบประมาณภายนอก</option>
+                  <option value="งบประมาณภายใน">งบประมาณภายใน</option>
+                  <option value="ทุนส่วนตัว">ทุนส่วนตัว</option>
                 </select>
               </div>
               <div class="mb-3">
@@ -113,6 +166,12 @@ export default function RecommendResearcher() {
                   class="form-control"
                   name="example-text-input"
                   placeholder="กรุณาใส่แหล่งทุน"
+                  onChange={(e) => {
+                    setScholar({
+                      ...scholar,
+                      scholarBudgetName: e.target.value,
+                    });
+                  }}
                 />
               </div>
               <div class="mb-3">
@@ -122,6 +181,9 @@ export default function RecommendResearcher() {
                   class="form-control"
                   name="example-text-input"
                   placeholder="กรุณาใส่ปีงบประมาณ"
+                  onChange={(e) => {
+                    setScholar({ ...scholar, budgetYear: e.target.value });
+                  }}
                 />
               </div>
             </div>
@@ -133,6 +195,7 @@ export default function RecommendResearcher() {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
+                onClick={addScholar}
               >
                 Save changes
               </button>
@@ -166,10 +229,15 @@ export default function RecommendResearcher() {
                   <div className="col-md-12">
                     <div class="mb-3">
                       <div class="form-label">ชื่อโครงการวิจัย</div>
-                      <select class="form-select">
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                      <select
+                        class="form-select"
+                        onChange={_recommend}
+                        value={scholarSelected}
+                      >
+                        <option value={0}>โปรดเลือก</option>
+                        {scholarList?.map((item) => (
+                          <option value={item.id}>{item.scholarName}</option>
+                        ))}
                       </select>
                     </div>
                     <div class="mb-3">
@@ -179,6 +247,7 @@ export default function RecommendResearcher() {
                         class="form-control"
                         name="input-text-scholarowner"
                         placeholder="กรุณาเลือกชื่อโครงการวิจัย"
+                        value={showItem.scholarBudgetName}
                         disabled
                       />
                     </div>
@@ -189,6 +258,7 @@ export default function RecommendResearcher() {
                         class="form-control"
                         name="input-text-budget"
                         placeholder="กรุณาเลือกชื่อโครงการวิจัย"
+                        value={showItem.scholarType}
                         disabled
                       />
                     </div>
@@ -196,7 +266,11 @@ export default function RecommendResearcher() {
                 </div>
                 <div className="row">
                   <div className="col-md-12 d-flex justify-content-center">
-                    <button type="button" className="btn btn-info mb-3 ">
+                    <button
+                      type="button"
+                      className="btn btn-info mb-3 "
+                      onClick={recommend}
+                    >
                       ค้นหา
                     </button>
                   </div>
@@ -220,21 +294,24 @@ export default function RecommendResearcher() {
                           >
                             ชื่อผู้วิจัย
                           </th>
+
                           <th
                             scope="col"
                             className="bg-primary text-white"
-                            style={{ fontSize: "14px" }}
-                          ></th>
-                          <th
-                            scope="col"
-                            className="bg-primary text-white"
-                            style={{ fontSize: "14px" }}
+                            style={{ fontSize: "14px", width: "140px" }}
                           >
                             ความเหมาะสม
                           </th>
+                          <th
+                            scope="col"
+                            className="bg-primary text-white"
+                            style={{ width: "10px" }}
+                          ></th>
                         </tr>
                       </thead>
-                      <tbody>{datatest.map((data) => rendertable(data))}</tbody>
+                      <tbody>
+                        {rankingList.map((data, idx) => rendertable(idx, data))}
+                      </tbody>
                     </table>
                   </div>
                 </div>

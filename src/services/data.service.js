@@ -21,3 +21,13 @@ export const getTrendByYear = async (filterState, yearList) => {
     });
   });
 };
+
+
+export const getTypeOfResearch = async (filterState)=>{
+  return authication().then(async () => {
+    return await axios.get(`${url}/getTypeOfResearch`, {
+      params: filterState,
+      headers: { token },
+    });
+  });
+}

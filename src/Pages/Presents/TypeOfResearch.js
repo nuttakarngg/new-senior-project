@@ -2,79 +2,14 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import canvasJs from "../../Libs/canvasjs.react";
 import YearRange from "../../Components/YearRange";
-import { getResearchAll } from "../../services/research.service";
 import { getAllBranch } from "../../services/branch.service";
+import { getTypeOfResearch } from "../../services/data.service";
 export default function TypeOfResearch() {
   // Initial Variable
   const CanvasJSChart = canvasJs.CanvasJSChart;
-  const [research, setResearch] = useState([]);
   const dispatch = useDispatch();
   const [branch, setBranch] = useState([]);
-  const [researchType, setResearchType] = useState([]);
   const [typeOfResearch, setTypeOfResearch] = useState([]);
-  const fetchResearch = () => {
-    getResearchAll(filterState).then((result) => {
-      if (result.status === 200) {
-        // console.log(result.data);
-        getResearchType();
-        console.log(result.data.data);
-        setResearch(result.data.data);
-        getResearchType();
-      }
-    });
-  };
-  const fetchBranch = () => {
-    getAllBranch().then((result) => {
-      if (result.status === 200) {
-        setBranch(result.data.data);
-      }
-    });
-  };
-  useEffect(() => {
-    fetchBranch();
-    fetchResearch();
-  }, []);
-  const options = {
-    animationEnabled: true,
-    borderWidth: 3,
-    title: {
-      text: "จำนวนประเภทงานวิจัย",
-      fontFamily: "Prompt",
-      horizontalAlign: "left",
-      padding: 15,
-    },
-    subtitles: [
-      {
-        fontFamily: "Prompt",
-        wrap: true,
-        text: `${research.length} งานวิจัยทั้งหมด`,
-        verticalAlign: "center",
-        fontSize: 18,
-        dockInsidePlotArea: true,
-      },
-    ],
-    data: [
-      {
-        innerRadius: "80%",
-        type: "doughnut",
-        showInLegend: true,
-        indexLabel: "{name}: {y}",
-        yValueFormatString: "#,###'%'",
-        dataPoints: [
-          {
-            name: researchType[0],
-            y: ((typeOfResearch[0] / research.length) * 100).toFixed(2),
-            color: "#4ED8DA",
-          },
-          {
-            name: researchType[1],
-            y: ((typeOfResearch[1] / research.length) * 100).toFixed(2),
-            color: "#C04DD8",
-          },
-        ],
-      },
-    ],
-  };
   const initialFilterState = {
     keyword: "",
     researchResult: "",
@@ -90,6 +25,125 @@ export default function TypeOfResearch() {
     2553, 2552, 2551, 2550,
   ];
   const [filterState, setFilterState] = useState(initialFilterState);
+  const fetchType = () => {
+    getTypeOfResearch(filterState).then((result) => {
+      if (result.status === 200) {
+        setTypeOfResearch(result.data);
+      }
+    });
+  };
+  const _renderDonut = (item) => {
+    console.log(item);
+    let type = item.type;
+    if (type.length === 0) {
+      return null;
+    }
+    const _mapColor = (type) => {
+      switch (type) {
+        case "การพัฒนาเชิงทดลอง":
+          return "#4ED8DA";
+        case "การวิจัยประยุกต์":
+          return "#C04DD8";
+        case "การวิจัยพื้นฐาน":
+          return "#206bc4";
+      }
+    };
+    let all = type?.map((i) => i.count)?.reduce((a = 0, b) => (a += b)) || 0;
+    const _maptype = (itemtype) => {
+      return (
+        <div className="">
+          <span style={{ fontSize: "24px", fontWeight: 500 }}>
+            <i
+              className="fa fa-circle"
+              style={{ color: _mapColor(itemtype.researchType) }}
+            ></i>{" "}
+            {((itemtype.count / all) * 100).toFixed(2)} %
+          </span>
+          <p className="text-muted">
+            <i className="fa fa-circle" style={{ color: "white" }}></i>{" "}
+            {itemtype.researchType}
+          </p>
+        </div>
+      );
+    };
+    const _mapDataPoint = () => {
+      return item.type.map((item2) => ({
+        name: item2.researchType,
+        y: ((item2.count / all) * 100).toFixed(2),
+        color: _mapColor(item2.researchType),
+      }));
+    };
+    const options = {
+      animationEnabled: true,
+      borderWidth: 3,
+      title: {
+        text: "จำนวนประเภทงานวิจัย",
+        fontFamily: "Prompt",
+        horizontalAlign: "left",
+      },
+      subtitles: [
+        {
+          fontFamily: "Prompt",
+          text: `${all} งานวิจัยทั้งหมด`,
+          verticalAlign: "center",
+          fontSize: 18,
+          dockInsidePlotArea: true,
+        },
+      ],
+      data: [
+        {
+          innerRadius: "80%",
+          type: "doughnut",
+          showInLegend: true,
+          // indexLabel: "{name}: {y}",
+          yValueFormatString: "#,###'%'",
+          dataPoints: _mapDataPoint(),
+        },
+      ],
+    };
+    return (
+      <div className="card animate__animated animate__slideInRight mb-3">
+        <div className="card-header bg-primary">
+          <span className="text-white">
+            {branch.filter((branchItem) => branchItem.id == item.id)[0].name_th}
+          </span>
+        </div>
+        <div className="card-body">
+          {filterState.branchList.length === 0 ? (
+            <div className="text-danger">
+              *** กรุณาเลือกสาขาที่ต้องการทราบแนวโน้มของงบประมาณ ***
+            </div>
+          ) : (
+            <div className="row bg-white p-5" style={{ minHeight: "60vh" }}>
+              <div className="col-md-6 col-sm-12 px-0">
+                <CanvasJSChart options={options} />
+              </div>
+              <div className="col-md-6 col-sm-12 bg-white d-flex justify-content-center align-items-center py-4 py-4">
+                <div className="d-flex flex-column">
+                  {item?.type.map(_maptype)}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+  const fetchBranch = () => {
+    getAllBranch().then((result) => {
+      if (result.status === 200) {
+        setBranch(result.data.data);
+        // console.log(result.data.data);
+      }
+    });
+  };
+  useEffect(() => {
+    fetchBranch();
+  }, []);
+
+  useEffect(() => {
+    fetchType();
+  }, [filterState]);
 
   // End initial variable
   // Handle Event
@@ -118,21 +172,6 @@ export default function TypeOfResearch() {
       {year}
     </option>
   ));
-  const getResearchType = () => {
-    var temp = [];
-    let keys = Array.from(new Set(research.map((item) => item.researchType)));
-    keys.forEach((item, idx) => {
-      temp[idx] = research.reduce(
-        (counter, obj) =>
-          obj.researchType === item ? (counter += 1) : counter,
-        0
-      );
-    });
-    setTypeOfResearch([...temp]);
-    console.log(typeOfResearch);
-    setResearchType([...keys]);
-  };
-
   // End Rander State
   // UseEffect
   useEffect(() => {
@@ -142,10 +181,6 @@ export default function TypeOfResearch() {
     });
   });
 
-  useEffect(() => {
-    fetchBranch();
-    fetchResearch();
-  }, [filterState]);
   //End UseEffect
   return (
     <div className="container-xl">
@@ -202,72 +237,7 @@ export default function TypeOfResearch() {
               </div>
             </div>
             <div className="col-xl-9 col-sm-12 my-3">
-              <div className="card animate__animated animate__slideInRight">
-                <div className="card-header bg-primary">
-                  <span className="text-white">จำนวนประเภทงานวิจัย</span>
-                </div>
-                <div className="card-body">
-                  {filterState.branchList.length === 0 ? (
-                    <div className="text-danger">
-                      *** กรุณาเลือกสาขาที่ต้องการทราบแนวโน้มของงบประมาณ ***
-                    </div>
-                  ) : (
-                    <div
-                      className="row bg-white p-5"
-                      style={{ minHeight: "60vh" }}
-                    >
-                      <div className="col-md-6 col-sm-12 px-0">
-                        <CanvasJSChart options={options} />
-                      </div>
-                      <div className="col-md-6 col-sm-12 bg-white d-flex justify-content-center align-items-center py-4 py-4">
-                        <div className="d-flex flex-column">
-                          <div className="">
-                            <span style={{ fontSize: "24px", fontWeight: 500 }}>
-                              <i
-                                className="fa fa-circle"
-                                style={{ color: "#4ED8DA" }}
-                              ></i>{" "}
-                              {(
-                                (typeOfResearch[0] / research.length) *
-                                100
-                              ).toFixed(2)}{" "}
-                              %
-                            </span>
-                            <p className="text-muted">
-                              <i
-                                className="fa fa-circle"
-                                style={{ color: "white" }}
-                              ></i>{" "}
-                              {/* {[1]} */}
-                              {researchType[0]}
-                            </p>
-                          </div>
-                          <div className="">
-                            <span style={{ fontSize: "24px", fontWeight: 500 }}>
-                              <i
-                                className="fa fa-circle"
-                                style={{ color: "#C04DD8" }}
-                              ></i>{" "}
-                              {(
-                                (typeOfResearch[1] / research.length) *
-                                100
-                              ).toFixed(2)}{" "}
-                              %
-                            </span>
-                            <p className="text-muted">
-                              <i
-                                className="fa fa-circle"
-                                style={{ color: "white" }}
-                              ></i>{" "}
-                              {researchType[1]}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+              {typeOfResearch.map(_renderDonut)}
             </div>
           </div>
         </div>
