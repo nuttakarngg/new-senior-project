@@ -1,5 +1,5 @@
 const express = require("express");
-const { Op, QueryTypes } = require("sequelize");
+const { Op, QueryTypes, fn, col } = require("sequelize");
 const { sequelize } = require("../database/models/branch");
 const Branch = require("../database/models/branch");
 const Research = require("../database/models/research");
@@ -7,7 +7,7 @@ const Role = require("../database/models/role");
 const User = require("../database/models/user");
 const router = express.Router();
 const { authentication } = require("../middlewares/authentication");
-router.use(authentication);
+// router.use(authentication);
 
 router.get("/getPricePerYear", async (request, response) => {
   try {
@@ -40,7 +40,8 @@ router.get("/getPricePerYear", async (request, response) => {
 router.get("/getTrendByYear", async (request, response) => {
   try {
     const { yearList } = request.query;
-    const { branchList } = JSON.parse(request.query.filterState);
+    console.log(request.query);
+    const { branchList } = request.query;
     console.log(branchList);
     let clause = " AND ";
     if (branchList && branchList.length > 0) {
@@ -72,7 +73,26 @@ router.get("/getTrendByYear", async (request, response) => {
 
 router.get("/getTypeOfResearch", async (request, response) => {
   try {
-    let researchType = await Research.findAll();
+    let { branchList } = request.query;
+    console.log(branchList);
+    let promises = [];
+    if(branchList){
+      
+      branchList.forEach((item) => {
+        promises.push(
+          sequelize.query(
+            `select count(*) as count,r.researchType from research r join researchs_researchers rr on r.researchId = rr.researchId join users u on u.id=rr.userId where u.branchId = ${item} GROUP BY r.researchType`,
+            { type: QueryTypes.SELECT }
+          )
+        );
+      });
+    }
+    Promise.all(promises).then((result) => {
+      return response.json(result.map((item,index)=>({
+        id:branchList[index],
+        type:item
+      })));
+    });
   } catch (e) {
     console.log(e);
     return response.status(500).json({
