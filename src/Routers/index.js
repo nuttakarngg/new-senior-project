@@ -13,6 +13,7 @@ import Profile from "../Pages/UsersManage/Profile";
 import RecommendResearcher from "../Pages/Recommend/RecommendResearcher";
 import ReseachDetails from "../Pages/UsersManage/ResearchDetails";
 import ReseacherDetails from "../Pages/UsersManage/ResearcherDetails";
+import TypeOfScholar from "../Pages/Presents/TypeOfScholar";
 
 // function PrivateRoute({ children }) {
 //   return JSON.parse(localStorage.getItem('token')) !== null?children:<Redirect to="/login"/>
@@ -46,6 +47,9 @@ function AppRouting() {
       </Route>
       <Route path="/Presents/TypeOfResearch">
         <TypeOfResearch />
+      </Route>
+      <Route path="/Presents/TypeOfScholar">
+        <TypeOfScholar />
       </Route>
       <Route path="/UsersManage/Researcher">
         <Users />

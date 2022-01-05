@@ -12,6 +12,7 @@ function Navbar() {
   const dispatch = useDispatch();
   useEffect(async () => {
     const authenti = await auth.user();
+    console.log(authenti);
     if (authenti.status === 200) {
       setAuthen(authenti.data.data);
     }
@@ -183,6 +184,15 @@ function Navbar() {
                             to="/Presents/TypeOfResearch"
                           >
                             จำนวนประเภทงานวิจัย
+                        </Link>
+                        <Link
+                            className={
+                              "dropdown-item " +
+                              (navbar[1] === "/TypeOfScholar" ? "active" : "")
+                            }
+                            to="/Presents/TypeOfScholar"
+                          >
+                            จำนวนแหล่งทุนในแต่ละปี
                           </Link>
                         </div>
                       </div>
@@ -225,7 +235,7 @@ function Navbar() {
                       </div>
                     </div>
                   </li>
-              )}
+                )}
             </ul>
             {/* <div className="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
               <form action="." method="get">

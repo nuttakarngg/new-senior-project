@@ -138,14 +138,14 @@ export default function Profile() {
       setImage(reader.result);
     });
     reader.readAsDataURL(event.target.files[0]);
-    editProfileImage(event.target.files[0]).then(result=>{
-      if(result.status===200){
-        toast.success('แก้ไขข้อมูลสำเร็จ')
-      }else{
-        toast.error('มีข้อผิดพลาดบางอย่าง')
+    editProfileImage(event.target.files[0]).then((result) => {
+      if (result.status === 200) {
+        toast.success("แก้ไขข้อมูลสำเร็จ");
+      } else {
+        toast.error("มีข้อผิดพลาดบางอย่าง");
       }
-    })
-    
+    });
+
     console.log(image);
   };
   return (
@@ -161,9 +161,11 @@ export default function Profile() {
                 <label htmlFor="file-input">
                   <img
                     src={
-                      image.startsWith("data")
-                        ? image
-                        : `http://localhost:3001/public/profiles/${image}`
+                      data.image
+                        ? image.startsWith("data")
+                          ? image
+                          : `http://localhost:3001/public/profiles/${image}`
+                        : "/img/no-user.jpg"
                     }
                     className="img-user-responsive"
                   />
