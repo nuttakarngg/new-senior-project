@@ -11,7 +11,6 @@ const Branch = require("../database/models/branch");
 const { Op } = require("sequelize");
 const Role = require("../database/models/role");
 const Researchs_Researchers = require("../database/models/association/researchs_researchers");
-const req = require("express/lib/request");
 
 router.get("/", async (request, response) => {
   try {

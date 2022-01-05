@@ -81,6 +81,7 @@ Research.init(
   },
   { sequelize, modelName: "research" }
 );
-Research.User = Research.belongsToMany(User, { through: Researchs_Researchers,foreignKey:'researchId' });
+Research.Research_User = Research.belongsToMany(User, { through: Researchs_Researchers,foreignKey:'researchId' });
+Research.User_Research = User.belongsToMany(Research, { through: Researchs_Researchers,foreignKey:'userId' });
 
 module.exports = Research;
