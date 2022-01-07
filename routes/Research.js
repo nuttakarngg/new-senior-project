@@ -104,19 +104,18 @@ router.get("/getResearchById/:id", async (request, response) => {
   try {
     const id = request.params.id;
     if (id) {
-  
       const research = await Research.findAll({
         // where: {
         //   researcherId: id,
         // },
-        include:[
+        include: [
           {
-            model:User,
-            where:{
-              id:request.params.id
-            }
-          }
-        ]
+            model: User,
+            where: {
+              id: request.params.id,
+            },
+          },
+        ],
         // order:
       });
       return response.status(200).json({
@@ -127,6 +126,54 @@ router.get("/getResearchById/:id", async (request, response) => {
   } catch (e) {
     console.log(e);
     return response.status(500).json({
+      error: "network error!",
+    });
+  }
+});
+router.get("/getResearchByRid/:id", async (request, response) => {
+  try {
+    const research = await Research.findOne({
+      where: {
+        researchId: request.params.id,
+      },
+      include: [
+        {
+          model: User,
+          through: {
+            where: {
+              // researchId: request.params.id,
+              gtype: "หัวหน้าโครงการวิจัย",
+            },
+          },
+        },
+      ],
+      // order:
+    });
+    console.log(research.toJSON());
+    return response.status(200).json({
+      data: research,
+    });
+  } catch (e) {
+    console.log(e);
+    return response.status(500).json({
+      error: "network error!",
+    });
+  }
+});
+
+router.put("/editResearchDetail", (req, res) => {
+  try {
+    console.log(req.body);
+    Research.update(req.body, {
+      where: {
+        researchId: req.body.id,
+      },
+    }).then((result) => {
+      return res.status(200).json({});
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
       error: "network error!",
     });
   }
