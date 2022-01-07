@@ -76,8 +76,7 @@ router.get("/getTypeOfResearch", async (request, response) => {
     let { branchList } = request.query;
     console.log(branchList);
     let promises = [];
-    if(branchList){
-      
+    if (branchList) {
       branchList.forEach((item) => {
         promises.push(
           sequelize.query(
@@ -88,14 +87,64 @@ router.get("/getTypeOfResearch", async (request, response) => {
       });
     }
     Promise.all(promises).then((result) => {
-      return response.json(result.map((item,index)=>({
-        id:branchList[index],
-        type:item
-      })));
+      return response.json(
+        result.map((item, index) => ({
+          id: branchList[index],
+          type: item,
+        }))
+      );
     });
   } catch (e) {
     console.log(e);
     return response.status(500).json({
+      error: "network error!",
+    });
+  }
+});
+
+router.get("/getTypeOfScholar/:id", async (req, res) => {
+  try {
+    const { useYear, budgetType, owner, startYear, endYear, year } = req.query;
+    console.log(req.query);
+    const research = await Research.findAll({
+      attributes: [[fn("count", col("*")), "total"], "researchScholarName"],
+      group: "researchScholarName",
+      where: {
+        // [Op.and]: [
+        // {
+        // researchScholarName:req.query.researchScholarName||'',
+        researchBudgetType: {
+          [Op.like]: `%${budgetType}%`,
+        },
+        researchScholarName: {
+          [Op.like]: `%${owner}%`,
+        },
+        researchBudgetYear:
+          useYear === "true"
+            ? {
+                [Op.between]: [startYear, endYear],
+              }
+            : year,
+
+        // }
+        // ],
+      },
+      include: {
+        model: User,
+        required: true,
+        attributes: [],
+        where: {
+          branchId: req.params.id,
+        },
+      },
+    });
+    return res.status(200).json({
+      id: req.params.id,
+      data: research,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
       error: "network error!",
     });
   }
