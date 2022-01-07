@@ -22,12 +22,21 @@ export const getTrendByYear = async (filterState, yearList) => {
   });
 };
 
-
-export const getTypeOfResearch = async (filterState)=>{
+export const getTypeOfResearch = async (filterState) => {
   return authication().then(async () => {
     return await axios.get(`${url}/getTypeOfResearch`, {
       params: filterState,
       headers: { token },
     });
   });
-}
+};
+
+export const getScohlarType = async (filterState,id) => {
+  console.log(filterState);
+  return authication().then(async () => {
+    return await axios.get(`${url}/getTypeOfScholar/${id}`, {
+      params: filterState,
+      headers: { token },
+    });
+  });
+};

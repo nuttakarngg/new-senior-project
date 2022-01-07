@@ -19,3 +19,11 @@ export const getAllScholar = async () => {
     });
   });
 };
+
+export const getOwner = async () => {
+  return authication().then(async () => {
+    return await axios.get(`${url}/getOwner`, {
+      headers: { token },
+    });
+  });
+};
