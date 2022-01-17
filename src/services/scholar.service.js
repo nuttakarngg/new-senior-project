@@ -5,8 +5,12 @@ import axios from "axios";
 const url = `${environment.apiURL}/scholar`;
 
 export const createScholar = async (scholar) => {
+  const formData = new FormData();
+  formData.append("file", scholar.file);
+  formData.append("scholar", JSON.stringify(scholar));
+  console.log(scholar);
   return authication().then(async () => {
-    return await axios.post(`${url}/`, scholar, {
+    return await axios.post(`${url}/`, formData, {
       headers: { token },
     });
   });

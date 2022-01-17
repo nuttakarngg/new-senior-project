@@ -8,6 +8,7 @@ import {
   removeScholar,
 } from "../../services/scholar.service";
 import Loading from "../../Components/Loading";
+import Swal from "sweetalert2";
 
 const checkpercentage = (percentage) => {
   if (percentage > 70) {
@@ -37,7 +38,7 @@ export default function RecommendResearcher() {
       .then((result) => {
         if (result.status === 200) {
           setRankingList(result.data);
-          console.log(result);
+          // console.log(result);
         }
       })
       .finally(() => setIsLoading(false));
@@ -53,7 +54,7 @@ export default function RecommendResearcher() {
   }, []);
   const fetchScholar = () => {
     getAllScholar().then((result) => {
-      console.log(result.data);
+      // console.log(result.data);
       if (result.status === 200) {
         setScholarList(result.data.data);
       }
@@ -75,6 +76,21 @@ export default function RecommendResearcher() {
     });
   };
   const addScholar = () => {
+    if (
+      !(
+        scholar.scholarName &&
+        scholar.scholarType &&
+        scholar.scholarBudgetName &&
+        scholar.budgetYear
+      )
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+      });
+      return null;
+    }
+    setIsLoading(true);
     lexTo(scholar.scholarName).then((result) => {
       if (result.status === 200) {
         let { types, tokens } = result.data;
@@ -88,16 +104,19 @@ export default function RecommendResearcher() {
           ...scholar,
           tokens: `|${narr.join("|")}|`,
         });
-        console.log(`|${narr.join("|")}|`);
+        // console.log(`|${narr.join("|")}|`);
         fetchScholar();
+        setIsLoading(false);
       }
     });
   };
   const _removeScholar = (id) => {
+    setIsLoading(true);
     removeScholar(id).then((result) => {
       if (result.status === 200) {
       }
       fetchScholar();
+      setIsLoading(false);
     });
   };
   const rendertable = (idx, datatest) => {
@@ -186,7 +205,9 @@ export default function RecommendResearcher() {
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <label class="form-label">ชื่อโครงการวิจัย</label>
+                <label class="form-label">
+                  ชื่อโครงการวิจัย<span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   class="form-control"
@@ -198,21 +219,28 @@ export default function RecommendResearcher() {
                 />
               </div>
               <div class="mb-3">
-                <label class="form-label">ประเภทงบประมาณ</label>
+                <label class="form-label">
+                  ประเภทงบประมาณ<span className="text-danger">*</span>
+                </label>
                 <select
                   class="form-select"
                   onChange={(e) => {
                     setScholar({ ...scholar, scholarType: e.target.value });
                   }}
                 >
-                  <option selected>กรุณาเลือกประเภทงบประมาณ</option>
+                  <option selected>
+                    กรุณาเลือกประเภทงบประมาณ
+                   
+                  </option>
                   <option value="งบประมาณภายนอก">งบประมาณภายนอก</option>
                   <option value="งบประมาณภายใน">งบประมาณภายใน</option>
                   <option value="ทุนส่วนตัว">ทุนส่วนตัว</option>
                 </select>
               </div>
               <div class="mb-3">
-                <label class="form-label">แหล่งทุน</label>
+                <label class="form-label">
+                  แหล่งทุน<span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   class="form-control"
@@ -227,17 +255,32 @@ export default function RecommendResearcher() {
                 />
               </div>
               <div class="mb-3">
-                <label class="form-label">ปีงบประมาณ</label>
+                <label class="form-label">
+                  ปีงบประมาณ<span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   class="form-control"
                   name="example-text-input"
                   placeholder="กรุณาใส่ปีงบประมาณ"
+                  value={scholar.budgetYear}
                   onChange={(e) => {
-                    setScholar({ ...scholar, budgetYear: e.target.value });
+                    let text = "";
+                    e.target.value.split("").forEach((item) => {
+                      if (/\d/.test(item)) {
+                        text += item;
+                      }
+                    });
+                    setScholar({ ...scholar, budgetYear: text });
                   }}
                 />
               </div>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setScholar({ ...scholar, file: e.target.files[0] })
+                }
+              />
             </div>
             <div class="modal-footer">
               <button

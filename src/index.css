@@ -46,6 +46,7 @@ body {
   -webkit-animation: spin 4s linear infinite;
   animation: spin 4s linear infinite;
   position: relative;
+  z-index: 1090;
 }
 
 .cm-spinner::before,
@@ -115,7 +116,7 @@ body {
   height: 100%;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.75);
-  z-index: 1050;
+  z-index: 1060;
   position: absolute;
   left: 0;
   top: 0;
@@ -191,11 +192,19 @@ body {
 .sholarList:hover .scholar-del {
   visibility: initial;
 }
-.sholarList{
+.sholarList {
   align-items: center;
-  padding: 0 10px ;
+  padding: 0 10px;
 }
-.sholarList:hover span{
+.sholarList:hover span {
   border-radius: 0;
   border-bottom: 3px lightgray solid;
+}
+
+.modal {
+  z-index: 1030 !important;
+}
+
+.modal-backdrop {
+  z-index: 1020 !important;
 }
