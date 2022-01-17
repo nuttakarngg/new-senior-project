@@ -2,7 +2,7 @@ const express = require("express");
 const Branch = require("../database/models/branch");
 const { authentication } = require("../middlewares/authentication");
 const router = express.Router();
-router.use(authentication);
+// router.use(authentication);
 router.get("/", async (request, response) => {
   try{
     const branch = await Branch.findAll();

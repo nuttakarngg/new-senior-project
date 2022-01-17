@@ -1,16 +1,11 @@
 const express = require("express");
 const Research = require("../database/models/research");
 const User = require("../database/models/user");
-const {
-  user_research,
-} = require("../database/models/association/researchs_researchers");
 const router = express.Router();
 const { authentication } = require("../middlewares/authentication");
-router.use(authentication);
 const Branch = require("../database/models/branch");
 const { Op } = require("sequelize");
 const Role = require("../database/models/role");
-const Researchs_Researchers = require("../database/models/association/researchs_researchers");
 
 router.get("/", async (request, response) => {
   try {
@@ -81,7 +76,7 @@ router.get("/", async (request, response) => {
     });
   }
 });
-router.post("/", (request, response) => {
+router.post("/", authentication,(request, response) => {
   try {
     const research = request.body;
     console.log(request.user);
@@ -149,7 +144,6 @@ router.get("/getResearchByRid/:id", async (request, response) => {
       ],
       // order:
     });
-    console.log(research.toJSON());
     return response.status(200).json({
       data: research,
     });

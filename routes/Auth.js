@@ -37,7 +37,6 @@ router.get("/", async (request, response) => {
       include: [Branch, Role],
     });
     if (user) {
-      console.log(user);
       return response.json({ status: 200, data: user, result: true });
     } else {
       return response.json({ status: 403, error: "access forbidden" });
