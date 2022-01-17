@@ -21,9 +21,12 @@ Scholar.init(
     budgetYear: {
       type: DataTypes.STRING,
     },
-    tokens:{
-        type: DataTypes.STRING,
-    }
+    tokens: {
+      type: DataTypes.STRING,
+    },
+    file: {
+      type: DataTypes.STRING,
+    },
   },
   { sequelize, modelName: "scholar", timestamps: false, freezeTableName: true }
 );

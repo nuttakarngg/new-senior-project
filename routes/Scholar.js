@@ -4,7 +4,18 @@ const router = express.Router();
 const Role = require("../database/models/role");
 const Scholar = require("../database/models/scholar");
 const { authentication } = require("../middlewares/authentication");
+const multer = require("multer");
 const { fn, col } = require("sequelize");
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: "public/scholarFiles",
+    filename: function (req, file, cb) {
+      //req.body is empty...
+      //How could I get the new_file_name property sent from client here?
+      cb(null, Date.now() + "." + file.originalname.split(".")[1]);
+    },
+  }),
+});
 router.use(authentication);
 router.get("/", async (request, response) => {
   try {
@@ -14,9 +25,12 @@ router.get("/", async (request, response) => {
     return response.status(500).json({ error: "Network Error" });
   }
 });
-router.post("/", async (request, response) => {
+router.post("/", upload.single("file"), async (request, response) => {
   try {
-    let newScholar = await Scholar.create(request.body);
+    let newScholar = await Scholar.create({
+      ...JSON.parse(request.body.scholar),
+      file: request.file?.filename || null,
+    });
     return await response.json({ data: newScholar });
   } catch (e) {
     console.log(e);

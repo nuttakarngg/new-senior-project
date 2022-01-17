@@ -21,6 +21,7 @@
     "moment": "^2.29.1",
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.2",
     "react-native-date-picker": "^4.0.0",
     "sequelize": "^6.6.5",
     "table-scraper": "^1.0.3",

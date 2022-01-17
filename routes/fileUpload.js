@@ -13,8 +13,6 @@ const upload = multer({
       //How could I get the new_file_name property sent from client here?
       cb(
         null,
-        file.originalname +
-          "-" +
           Date.now() +
           "." +
           file.originalname.split(".")[1]
