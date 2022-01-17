@@ -34,15 +34,12 @@ export default function ReseachDetails() {
 
   const fetchresearch = async (callback) => {
     let userData = (await user()).data.data;
-
     getResearchByRid(params.id).then((result) => {
       if (result.status === 200) {
         if (callback) callback();
         console.log(result.data);
         setResearch(result.data.data);
-        console.log(userData);
-        console.log(result.data.data.users[0].id);
-        if (result.data.data.users[0].id == userData.id) {
+        if (result.data.data.users[0].id == userData?.id) {
           setOwnResearch(true);
         }
       }

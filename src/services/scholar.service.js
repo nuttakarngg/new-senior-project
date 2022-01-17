@@ -27,3 +27,9 @@ export const getOwner = async () => {
     });
   });
 };
+
+export const removeScholar = async (id) => {
+  return await axios.delete(`${url}/${id}`, {
+    headers: { token },
+  });
+};

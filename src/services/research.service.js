@@ -18,19 +18,15 @@ export const getResearchById = async (id) => {
   });
 };
 export const getResearchByRid = async (id) => {
-  return authication().then(async () => {
-    return await axios.get(`${url}/getResearchByRid/${id}`, {
-      headers: { token },
-    });
+  return await axios.get(`${url}/getResearchByRid/${id}`, {
+    headers: { token },
   });
 };
 
 export const getResearchAll = async (filterState) => {
-  return authication().then(async () => {
-    return await axios.get(`${url}/`, {
-      params: filterState,
-      headers: { token },
-    });
+  return await axios.get(`${url}/`, {
+    params: filterState,
+    headers: { token },
   });
 };
 

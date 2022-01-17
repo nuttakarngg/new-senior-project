@@ -3,19 +3,26 @@ import { useDispatch } from "react-redux";
 import CardResearcher from "../../Components/Database/CardResearcher";
 import { getAllBranch } from "../../services/branch.service";
 import { getAllResearcher } from "../../services/researcher.service";
+import Loading from "../../Components/Loading";
 import _ from "lodash";
 export default function Search() {
   // Initial Variable
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [branch, setBranch] = useState([]);
-  const [research, setResearch] = useState([])
+  const [research, setResearch] = useState([]);
   const initialFilterState = {
     keyword: "",
     acPosition: "",
     branchList: [],
   };
   const [filterState, setFilterState] = useState(initialFilterState);
-  const AcademiaPositionList = ["ศาสตราจารย์","รองศาสตราจารย์", "ผู้ช่วยศาสตราจารย์","ไม่มี"];
+  const AcademiaPositionList = [
+    "ศาสตราจารย์",
+    "รองศาสตราจารย์",
+    "ผู้ช่วยศาสตราจารย์",
+    "ไม่มี",
+  ];
   // End Initial Variable
   // Handle Event
   const handleCheckboxChange = (event) => {
@@ -48,10 +55,12 @@ export default function Search() {
   );
   // End Render State
   const fetchResearcher = () => {
-    console.log('fetch...');
-    getAllResearcher(filterState).then((result) => {
-      setResearch(result.data.data)
-    });
+    setIsLoading(true);
+    getAllResearcher(filterState)
+      .then((result) => {
+        setResearch(result.data.data);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const fetchBranch = () => {
@@ -78,6 +87,7 @@ export default function Search() {
   // End UseEffect
   return (
     <div className="container-xl">
+      <Loading status={isLoading} />
       <div className="page-header d-print-none mt-3 ">
         <div className="row align-items-center">
           <div className="col">
@@ -104,7 +114,7 @@ export default function Search() {
                         keyword: event.target.value,
                       })
                     }
-                ></input>
+                  ></input>
                   <button className="btn btn-outline-secondary" type="button">
                     <i className="fas fa-search" />
                   </button>
@@ -135,7 +145,9 @@ export default function Search() {
           </div>
         </div>
         <div className="col-md-8 col-sm-12">
-          {research.map((item,idx)=><CardResearcher {...item} key={idx}/>)}
+          {research.map((item, idx) => (
+            <CardResearcher {...item} key={idx} />
+          ))}
         </div>
       </div>
     </div>

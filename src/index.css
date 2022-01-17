@@ -172,17 +172,30 @@ body {
   cursor: pointer;
 }
 
-.image-upload > input
-{
-    display: none;
+.image-upload > input {
+  display: none;
 }
 
-.image-upload img
-{
-    cursor: pointer;
+.image-upload img {
+  cursor: pointer;
 }
 
-.image-upload{
+.image-upload {
   display: flex;
   justify-content: center;
+}
+.scholar-del {
+  visibility: hidden;
+}
+
+.sholarList:hover .scholar-del {
+  visibility: initial;
+}
+.sholarList{
+  align-items: center;
+  padding: 0 10px ;
+}
+.sholarList:hover span{
+  border-radius: 0;
+  border-bottom: 3px lightgray solid;
 }

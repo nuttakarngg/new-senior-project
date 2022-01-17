@@ -4,12 +4,12 @@ import CardResearch from "../../Components/Database/CardResearch";
 import axios from "axios";
 import { getResearchAll } from "../../services/research.service";
 import { getAllBranch } from "../../services/branch.service";
-
+import Loading from "../../Components/Loading";
 export default function Search() {
   // Initial Variable
   const [research, setResearch] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [branch, setBranch] = useState([]);
-
   const dispatch = useDispatch();
   const initialFilterState = {
     keyword: "",
@@ -98,13 +98,14 @@ export default function Search() {
   }, [filterState]);
   const fetchReseach = async () => {
     try {
+      setIsLoading(true);
       const response = await getResearchAll({
         ...filterState,
         useYear: filterState.useYear.toString(),
       });
       setResearch(response.data.data);
-      // console.log(response.data);
     } catch (err) {}
+    setIsLoading(false);
   };
   useEffect(() => {
     fetchReseach();
@@ -114,6 +115,7 @@ export default function Search() {
   // End UseEffect
   return (
     <div className="container-xl">
+      <Loading status={isLoading} />
       <div className="page-header d-print-none mt-3 ">
         <div className="row align-items-center">
           <div className="col">
