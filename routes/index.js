@@ -11,6 +11,7 @@ router
   .use("/data", require("./DataVisulization"))
   .use("/upload", require("./fileUpload"))
   .use("/scholar", require("./Scholar"))
-  .use("/mining", require("./Mining"));
+  .use("/mining", require("./Mining"))
+  .use("/mail", require("./mailer"));
 
 module.exports = router;
