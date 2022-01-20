@@ -9,6 +9,8 @@ import App from "./App";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import data from "./Redux/store";
+import $ from 'jquery';
+window.jQuery = $;
 const store = createStore(data);
 const Root = React.memo(App);
 ReactDOM.render(

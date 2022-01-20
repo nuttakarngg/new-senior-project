@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { lexTo } from "../../services/aiforthai.service";
 import { classify, ranking } from "../../services/recommend.service";
+import { Editor } from "@tinymce/tinymce-react";
+import { toast } from "react-toastify";
 import {
   createScholar,
   getAllScholar,
@@ -9,6 +11,7 @@ import {
 } from "../../services/scholar.service";
 import Loading from "../../Components/Loading";
 import Swal from "sweetalert2";
+import { sendEmail } from "../../services/mail.service";
 
 const checkpercentage = (percentage) => {
   if (percentage > 70) {
@@ -22,12 +25,23 @@ const checkpercentage = (percentage) => {
 
 export default function RecommendResearcher() {
   const dispatch = useDispatch();
+  const modalCloseRef = useRef();
+  const editorRef = useRef(null);
   const [scholar, setScholar] = useState({});
   const [scholarList, setScholarList] = useState([]);
   const [scholarSelected, setScholarSelected] = useState(0);
   const [label, setLabel] = useState("");
-  const [rankingList, setRankingList] = useState([]);
+  const [rankingList, setRankingList] = useState([
+    {
+      user: {
+        firstNameTH: "",
+        lastNameTH: "",
+      },
+      percent: 20,
+    },
+  ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [mailTemplate, setMailTemplate] = useState("");
   const [showItem, setShowItem] = useState({
     scholarBudgetName: null,
     scholarType: null,
@@ -38,7 +52,6 @@ export default function RecommendResearcher() {
       .then((result) => {
         if (result.status === 200) {
           setRankingList(result.data);
-          // console.log(result);
         }
       })
       .finally(() => setIsLoading(false));
@@ -74,6 +87,10 @@ export default function RecommendResearcher() {
         setLabel(result.data["prediction(label)"]);
       }
     });
+  };
+  const _closeModal = () => {
+    console.log(modalCloseRef.current.click());
+    modalCloseRef.current.click();
   };
   const addScholar = () => {
     if (
@@ -124,18 +141,36 @@ export default function RecommendResearcher() {
       <tr key={idx}>
         <th scope="row">{idx + 1}</th>
         <td>
-          {datatest.user.firstNameTH} {datatest.user.lastNameTH}
+          {datatest?.user?.firstNameTH} {datatest?.user?.lastNameTH}
         </td>
         <td className={checkpercentage(datatest.percent)}>
           <i className="fa fa-circle"></i> {datatest.percent} %
         </td>
         <td>
-          <button className="btn btn-success">
-            <i className="fas fa-share-square"></i>
+          <button
+            href="#"
+            className="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-sendmail"
+          >
+            <i className="fas fa-paper-plane"></i>
           </button>
         </td>
       </tr>
     );
+  };
+  const _sendMail = () => {
+    if (editorRef.current) {
+      setIsLoading(true);
+      let template = editorRef.current.getContent();
+      sendEmail(template, null)
+        .then((result) => {
+          console.log(result);
+          toast.success("ส่งข้อความสำเร็จ");
+          setIsLoading(false);
+        })
+        .catch((e) => setIsLoading(false));
+    }
   };
 
   return (
@@ -178,6 +213,67 @@ export default function RecommendResearcher() {
                   </button>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal modal-blur fade"
+        id="modal-sendmail"
+        tabindex="-1"
+        role="dialog"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">ส่งอีเมล</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                ref={(e) => (modalCloseRef.current = e)}
+              ></button>
+            </div>
+            <div class="modal-body">
+              <Editor
+                onInit={(evt, editor) => (editorRef.current = editor)}
+                init={{
+                  height: 500,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
+                    "print preview powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker imagetools textpattern noneditable help formatpainter permanentpen pageembed charmap tinycomments mentions quickbars linkchecker emoticons advtable export",
+                  ],
+                  toolbar: [
+                    "print preview powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker imagetools textpattern noneditable help formatpainter permanentpen pageembed charmap tinycomments mentions quickbars linkchecker emoticons advtable export",
+                    "undo redo | formatselect | " +
+                      "bold italic backcolor | alignleft aligncenter " +
+                      "alignright alignjustify | bullist numlist outdent indent | " +
+                      "removeformat | help",
+                  ],
+                  content_style:
+                    "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                }}
+              />
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary mt-4" onClick={_sendMail}>
+                  ส่ง
+                </button>
+                <button
+                  className="btn btn-secondary mt-4"
+                  onClick={_closeModal}
+                >
+                  ยกเลิก
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -228,10 +324,7 @@ export default function RecommendResearcher() {
                     setScholar({ ...scholar, scholarType: e.target.value });
                   }}
                 >
-                  <option selected>
-                    กรุณาเลือกประเภทงบประมาณ
-                   
-                  </option>
+                  <option selected>กรุณาเลือกประเภทงบประมาณ</option>
                   <option value="งบประมาณภายนอก">งบประมาณภายนอก</option>
                   <option value="งบประมาณภายใน">งบประมาณภายใน</option>
                   <option value="ทุนส่วนตัว">ทุนส่วนตัว</option>
