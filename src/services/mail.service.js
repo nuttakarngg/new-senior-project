@@ -5,15 +5,16 @@ const url = `${environment.apiURL}/mail`;
 
 export const sendEmail = async (
   mailTemplate,
-  email = "nuttakarngg@gmail.com"
+  email = "nuttakarngg@gmail.com",
+  fileSelect
 ) => {
-    console.log('mailTemplate',mailTemplate);
-  return await axios.post(
-    `${url}/`,
-    {
-      mailTemplate,
-      email,
-    },
-    
-  );
+  console.log("mailTemplate", mailTemplate);
+  return await axios.post(`${url}/`, {
+    mailTemplate,
+    email,
+    fileSelect,
+  });
+};
+export const getFiles = async () => {
+  return await axios.get(`${url}/files`);
 };

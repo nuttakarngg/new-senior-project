@@ -11,7 +11,7 @@ import {
 } from "../../services/scholar.service";
 import Loading from "../../Components/Loading";
 import Swal from "sweetalert2";
-import { sendEmail } from "../../services/mail.service";
+import { getFiles, sendEmail } from "../../services/mail.service";
 
 const checkpercentage = (percentage) => {
   if (percentage > 70) {
@@ -31,6 +31,8 @@ export default function RecommendResearcher() {
   const [scholarList, setScholarList] = useState([]);
   const [scholarSelected, setScholarSelected] = useState(0);
   const [label, setLabel] = useState("");
+  const [fileList, setFileList] = useState([]);
+  const [fileSelect, setFileSelect] = useState([]);
   const [rankingList, setRankingList] = useState([
     {
       user: {
@@ -40,8 +42,14 @@ export default function RecommendResearcher() {
       percent: 20,
     },
   ]);
+  const _fetchFileList = () => {
+    getFiles().then((result) => {
+      if (result.status === 200) {
+        setFileList(result.data.filenames);
+      }
+    });
+  };
   const [isLoading, setIsLoading] = useState(false);
-  const [mailTemplate, setMailTemplate] = useState("");
   const [showItem, setShowItem] = useState({
     scholarBudgetName: null,
     scholarType: null,
@@ -64,6 +72,7 @@ export default function RecommendResearcher() {
   });
   useEffect(() => {
     fetchScholar();
+    _fetchFileList();
   }, []);
   const fetchScholar = () => {
     getAllScholar().then((result) => {
@@ -72,6 +81,44 @@ export default function RecommendResearcher() {
         setScholarList(result.data.data);
       }
     });
+  };
+  const selectAll = () => {
+    setFileSelect(fileList.map((_, index) => index));
+  };
+  useEffect(() => {
+    // selectAll()
+    console.log(fileSelect.map((item) => fileList[item]));
+  }, [fileSelect]);
+  const selectFiles = (item, index) => {
+    console.log(fileSelect.findIndex((i) => i == index));
+    return (
+      <div key={index} className="mt-2 d-flex">
+        <input
+          type="checkbox"
+          id={"label" + index}
+          className="me-3"
+          value={index}
+          checked={!(-1 == fileSelect.findIndex((i) => i == index))}
+          onChange={(e) => {
+            let temp = [...fileSelect];
+            let checked = e.target.checked;
+            let value = e.target.value;
+            // console.log(checke);
+            if (!checked) {
+              let index = temp.findIndex((i) => i == value);
+              temp.splice(index, 1);
+              setFileSelect([...temp]);
+            } else {
+              setFileSelect([...temp, value]);
+            }
+          }}
+        />
+        <label htmlFor={"label" + index}>{item}</label>
+        <span>
+          <i className="fas fa-trash ms-2 text-danger" />
+        </span>
+      </div>
+    );
   };
   const _recommend = (e) => {
     setScholarSelected(e.target.value);
@@ -163,42 +210,50 @@ export default function RecommendResearcher() {
     if (editorRef.current) {
       setIsLoading(true);
       let template = editorRef.current.getContent();
-      sendEmail(template, null)
+      sendEmail(
+        template,
+        null,
+        fileSelect.map((item) => fileList[item])
+      )
         .then((result) => {
           console.log(result);
           toast.success("ส่งข้อความสำเร็จ");
           setIsLoading(false);
         })
-        .catch((e) => setIsLoading(false));
+        .catch((e) => {
+          setIsLoading(false);
+          console.log(e);
+        });
     }
   };
 
   return (
     <div className="container-xl">
       <Loading status={isLoading} />
+
       {/* -----------------MODAL----------------------------- */}
       <div
-        class="modal modal-blur fade"
+        className="modal modal-blur fade"
         id="modal-edit"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-hidden="true"
       >
         <div
-          class="modal-dialog modal-dialog-centered modal-lg"
+          className="modal-dialog modal-dialog-centered modal-lg"
           role="document"
         >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">แก้ไขโครงการวิจัย</h5>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">แก้ไขโครงการวิจัย</h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               {scholarList.map((item) => (
                 <div
                   className="sholarList d-flex justify-content-between rounded"
@@ -219,28 +274,28 @@ export default function RecommendResearcher() {
       </div>
 
       <div
-        class="modal modal-blur fade"
+        className="modal modal-blur fade"
         id="modal-sendmail"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-hidden="true"
       >
         <div
-          class="modal-dialog modal-dialog-centered modal-lg"
+          className="modal-dialog modal-dialog-centered modal-lg"
           role="document"
         >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">ส่งอีเมล</h5>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">ส่งอีเมล</h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
                 ref={(e) => (modalCloseRef.current = e)}
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <Editor
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 init={{
@@ -263,6 +318,29 @@ export default function RecommendResearcher() {
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                 }}
               />
+
+              <div className="row p-3">
+                <div className="d-flex gap-2">
+                  <h3>ไฟล์ที่ต้องการแนบ</h3>
+                  {/* <span
+                    className="btn btn-success inline"
+                    onClick={() => {
+                      console.log("add");
+                    }}
+                  >
+                    <i className="fas fa-plus" />
+                  </span> */}
+                </div>
+                {/* <div className="border-1 p-3">
+                  <input type="file"/>
+                </div> */}
+                <div
+                  className="border-1"
+                  style={{ maxHeight: "500px", overflowY: "scroll" }}
+                >
+                  {fileList.map((item, idx) => selectFiles(item, idx))}
+                </div>
+              </div>
               <div className="d-flex gap-2">
                 <button className="btn btn-primary mt-4" onClick={_sendMail}>
                   ส่ง
@@ -279,34 +357,34 @@ export default function RecommendResearcher() {
         </div>
       </div>
       <div
-        class="modal modal-blur fade"
+        className="modal modal-blur fade"
         id="modal-simple"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-hidden="true"
       >
         <div
-          class="modal-dialog modal-dialog-centered modal-lg"
+          className="modal-dialog modal-dialog-centered modal-lg"
           role="document"
         >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">เพิ่มข้อมูลโครงการวิจัย</h5>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">เพิ่มข้อมูลโครงการวิจัย</h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <label class="form-label">
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">
                   ชื่อโครงการวิจัย<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   name="example-text-input"
                   onChange={(e) => {
                     setScholar({ ...scholar, scholarName: e.target.value });
@@ -314,12 +392,12 @@ export default function RecommendResearcher() {
                   placeholder="กรุณาใส่ชื่อโครงการวิจัย"
                 />
               </div>
-              <div class="mb-3">
-                <label class="form-label">
+              <div className="mb-3">
+                <label className="form-label">
                   ประเภทงบประมาณ<span className="text-danger">*</span>
                 </label>
                 <select
-                  class="form-select"
+                  className="form-select"
                   onChange={(e) => {
                     setScholar({ ...scholar, scholarType: e.target.value });
                   }}
@@ -330,13 +408,13 @@ export default function RecommendResearcher() {
                   <option value="ทุนส่วนตัว">ทุนส่วนตัว</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label class="form-label">
+              <div className="mb-3">
+                <label className="form-label">
                   แหล่งทุน<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   name="example-text-input"
                   placeholder="กรุณาใส่แหล่งทุน"
                   onChange={(e) => {
@@ -347,13 +425,13 @@ export default function RecommendResearcher() {
                   }}
                 />
               </div>
-              <div class="mb-3">
-                <label class="form-label">
+              <div className="mb-3">
+                <label className="form-label">
                   ปีงบประมาณ<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   name="example-text-input"
                   placeholder="กรุณาใส่ปีงบประมาณ"
                   value={scholar.budgetYear}
@@ -375,10 +453,10 @@ export default function RecommendResearcher() {
                 }
               />
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-primary"
+                className="btn btn-primary"
                 data-bs-dismiss="modal"
                 onClick={addScholar}
               >
@@ -422,10 +500,10 @@ export default function RecommendResearcher() {
               <div className="card-body">
                 <div className="row">
                   <div className="col-md-12">
-                    <div class="mb-3">
-                      <div class="form-label">ชื่อโครงการวิจัย</div>
+                    <div className="mb-3">
+                      <div className="form-label">ชื่อโครงการวิจัย</div>
                       <select
-                        class="form-select"
+                        className="form-select"
                         onChange={_recommend}
                         value={scholarSelected}
                       >
@@ -437,22 +515,22 @@ export default function RecommendResearcher() {
                         ))}
                       </select>
                     </div>
-                    <div class="mb-3">
-                      <label class="form-label">แหล่งทุน</label>
+                    <div className="mb-3">
+                      <label className="form-label">แหล่งทุน</label>
                       <input
                         type="text"
-                        class="form-control"
+                        className="form-control"
                         name="input-text-scholarowner"
                         placeholder="กรุณาเลือกชื่อโครงการวิจัย"
                         value={showItem.scholarBudgetName}
                         disabled
                       />
                     </div>
-                    <div class="mb-3">
-                      <label class="form-label">งบประมาณ</label>
+                    <div className="mb-3">
+                      <label className="form-label">งบประมาณ</label>
                       <input
                         type="text"
-                        class="form-control"
+                        className="form-control"
                         name="input-text-budget"
                         placeholder="กรุณาเลือกชื่อโครงการวิจัย"
                         value={showItem.scholarType}

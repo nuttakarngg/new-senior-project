@@ -208,3 +208,8 @@ body {
 .modal-backdrop {
   z-index: 1020 !important;
 }
+
+.tox-notification{
+  display: none;
+  visibility: hidden;
+}
