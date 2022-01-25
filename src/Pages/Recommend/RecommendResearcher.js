@@ -34,13 +34,13 @@ export default function RecommendResearcher() {
   const [fileList, setFileList] = useState([]);
   const [fileSelect, setFileSelect] = useState([]);
   const [rankingList, setRankingList] = useState([
-    {
-      user: {
-        firstNameTH: "",
-        lastNameTH: "",
-      },
-      percent: 20,
-    },
+    // {
+    //   user: {
+    //     firstNameTH: "",
+    //     lastNameTH: "",
+    //   },
+    //   percent: 20,
+    // },
   ]);
   const _fetchFileList = () => {
     getFiles().then((result) => {
