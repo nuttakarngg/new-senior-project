@@ -23,8 +23,8 @@ router.get("/", async (request, response) => {
         {
           where: {
             [Op.or]: [
-              { firstName: { [Op.like]: `%${keyword}%` } },
-              { lastName: { [Op.like]: `%${keyword}%` } },
+              { firstNameTH: { [Op.like]: `%${keyword}%` } },
+              { lastNameTH: { [Op.like]: `%${keyword}%` } },
               { email: { [Op.like]: `%${keyword}%` } },
               { ac_position: { [Op.like]: `${keyword}%` } },
             ],
