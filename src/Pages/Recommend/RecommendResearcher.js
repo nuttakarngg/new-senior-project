@@ -17,7 +17,7 @@ const checkpercentage = (percentage) => {
   if (percentage > 70) {
     return "text-success";
   } else if (percentage >= 40) {
-    return "text-warning";
+    return "text-yellow";
   } else if (percentage < 40) {
     return "text-danger";
   }
@@ -121,6 +121,7 @@ export default function RecommendResearcher() {
     );
   };
   const _recommend = (e) => {
+    setIsLoading(true)
     setScholarSelected(e.target.value);
     let scholarItem = scholarList.filter(
       (item) => item.id == e.target.value
@@ -130,9 +131,11 @@ export default function RecommendResearcher() {
       scholarType: scholarItem?.scholarType || "",
     });
     classify(e.target.value).then((result) => {
-      if ((result.status = 200)) {
+      if ((result.status == 200)) {
         setLabel(result.data["prediction(label)"]);
       }
+    }).then(result=>{
+      setIsLoading(false)
     });
   };
   const _closeModal = () => {

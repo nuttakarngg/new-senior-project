@@ -20,7 +20,9 @@ export const ranking = async(label) =>{
   return authication().then(async () => {
     return await axios.get(`http://localhost:3001/api/mining/ranking`, {
       params: {
-        type: label,
+        // type: 'การวิจัยประยุกต์',
+        type: 'การวิจัยประยุกต์',
+        // type: label,
       },
       headers: {
         // token

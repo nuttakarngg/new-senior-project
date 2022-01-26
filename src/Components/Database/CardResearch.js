@@ -4,12 +4,12 @@ export default function CardResearch({
   researchId,
   researchNameTH,
   researchBudgetYear,
-  user,
+  users,
   researchBudgetType,
   researchResult,
   researchBudget,
 }) {
-  console.log(user);
+  console.log(users);
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
       <div
@@ -25,7 +25,7 @@ export default function CardResearch({
               <b>ปีงบประมาณ</b> {researchBudgetYear}
             </p>
             <p>
-              <b>สาขาที่เกี่ยวข้อง</b> {user?.branch?.name_th}
+              <b>สาขาที่เกี่ยวข้อง</b> {users[0]?.branch?.name_th}
             </p>
             <p>
               <b>ประเภทงบประมาณ</b> {researchBudgetType}
