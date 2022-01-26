@@ -6,7 +6,7 @@ require("dotenv").config();
 const logger = require("./middlewares/logger");
 
 const PORT = process.env.PORT || 8080;
-const HOST = process.env.HOST || "localhost";
+const HOST = process.env.HOST || "0.0.0.0";
 server.use('/public',express.static("public"));
 server.use(cors());
 server.use(bodyParser.json());

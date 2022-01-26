@@ -60,6 +60,7 @@ router.get("/createData", async function (req, res, next) {
 });
 router.get("/ranking", async function (req, res, next) {
   try {
+    console.log(req.body.type);
     let promises = [];
     let responseResult = [];
     let userId = [];

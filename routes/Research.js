@@ -38,7 +38,7 @@ router.get("/", async (request, response) => {
           ],
         },
       ],
-
+      order: ["researchBudgetYear", "researchNameTH"],
       where: {
         [Op.and]: {
           [Op.or]: {
@@ -76,7 +76,7 @@ router.get("/", async (request, response) => {
     });
   }
 });
-router.post("/", authentication,(request, response) => {
+router.post("/", authentication, (request, response) => {
   try {
     const research = request.body;
     console.log(request.user);
