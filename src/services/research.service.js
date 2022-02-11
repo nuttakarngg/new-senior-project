@@ -6,15 +6,14 @@ const url = `${environment.apiURL}/research`;
 
 export const addResearch = async (research) => {
   return authication().then(async () => {
+    console.log(research);
     return await axios.post(`${url}/`, { ...research }, { headers: { token } });
   });
 };
 
 export const getResearchById = async (id) => {
-  return authication().then(async () => {
     return await axios.get(`${url}/getResearchById/${id}`, {
       headers: { token },
-    });
   });
 };
 export const getResearchByRid = async (id) => {

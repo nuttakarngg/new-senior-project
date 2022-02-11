@@ -25,9 +25,7 @@ export const addUser = async (user) => {
 };
 
 export const getUserById = async (id) => {
-  return authication().then(async () => {
     return await axios.get(`${url}/` + id, { headers: { token: token } });
-  });
 };
 
 export const editUser = async (id, user) => {

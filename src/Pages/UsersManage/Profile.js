@@ -32,9 +32,10 @@ export default function Profile() {
   });
   const fetchResearchList = () => {
     getResearchById(data.id).then((result) => {
+      console.log(result);
       if (result.status === 200) {
         console.log(result.data);
-        setResearchList(result.data.data);
+        setResearchList([...result.data.data]);
       }
     });
   };
@@ -56,7 +57,7 @@ export default function Profile() {
     addResearch(watch()).then((result) => {
       if (result.status === 200) {
         toast.success("เพิ่มข้อมูลงานวิจัยสำเร็จ");
-        fetchResearchList();
+        setTimeout(()=>fetchResearchList(),1500)
         closeModalRef.current.click();
       }
     });
@@ -77,6 +78,9 @@ export default function Profile() {
     });
   };
   useEffect(() => {
+    // fetchResearchList();
+  }, [researchList]);
+  useEffect(() => {
     fetchResearchList();
   }, [data]);
   const _fetchUser = (callback) => {
@@ -96,7 +100,7 @@ export default function Profile() {
   };
   useEffect(() => {
     _fetchUser();
-
+    fetchResearchList();
     dispatch({
       type: "SET_DATA",
       payload: { navbar: ["/"] },
@@ -252,7 +256,7 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
-                <h4>ชื่อ-นามสกุล (ภาษาไทย)</h4>
+                <h4>ชื่อ-นามสกุล (ภาษาอังกฤษ)</h4>
                 <div className="d-flex mb-2">
                   <div>
                     {!editUser.fullNameEN ? (

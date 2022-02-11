@@ -12,6 +12,7 @@ import {
 import Loading from "../../Components/Loading";
 import Swal from "sweetalert2";
 import { getFiles, sendEmail } from "../../services/mail.service";
+import { Link } from "react-router-dom";
 
 const checkpercentage = (percentage) => {
   if (percentage > 70) {
@@ -114,14 +115,14 @@ export default function RecommendResearcher() {
           }}
         />
         <label htmlFor={"label" + index}>{item}</label>
-        <span>
+        {/* <span>
           <i className="fas fa-trash ms-2 text-danger" />
-        </span>
+        </span> */}
       </div>
     );
   };
   const _recommend = (e) => {
-    setIsLoading(true)
+    setIsLoading(true);
     setScholarSelected(e.target.value);
     let scholarItem = scholarList.filter(
       (item) => item.id == e.target.value
@@ -130,13 +131,16 @@ export default function RecommendResearcher() {
       scholarBudgetName: scholarItem?.scholarBudgetName || "",
       scholarType: scholarItem?.scholarType || "",
     });
-    classify(e.target.value).then((result) => {
-      if ((result.status == 200)) {
-        setLabel(result.data["prediction(label)"]);
-      }
-    }).then(result=>{
-      setIsLoading(false)
-    });
+    classify(e.target.value)
+      .then((result) => {
+        if (result.status == 200) {
+          setLabel(result.data["prediction(label)"]);
+          console.log(result.data['prediction(label)']);
+        }
+      })
+      .then((result) => {
+        setIsLoading(false);
+      });
   };
   const _closeModal = () => {
     console.log(modalCloseRef.current.click());
@@ -170,6 +174,8 @@ export default function RecommendResearcher() {
         createScholar({
           ...scholar,
           tokens: `|${narr.join("|")}|`,
+        }).then((res) => {
+          fetchScholar();
         });
         // console.log(`|${narr.join("|")}|`);
         fetchScholar();
@@ -191,7 +197,9 @@ export default function RecommendResearcher() {
       <tr key={idx}>
         <th scope="row">{idx + 1}</th>
         <td>
-          {datatest?.user?.firstNameTH} {datatest?.user?.lastNameTH}
+          <Link to={`/Database/ReseacherDetails/${datatest?.user?.id}`}>
+            {datatest?.user?.firstNameTH} {datatest?.user?.lastNameTH}
+          </Link>
         </td>
         <td className={checkpercentage(datatest.percent)}>
           <i className="fa fa-circle"></i> {datatest.percent} %
@@ -248,7 +256,7 @@ export default function RecommendResearcher() {
         >
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">แก้ไขโครงการวิจัย</h5>
+              <h5 className="modal-title">ลบโครงการวิจัย</h5>
               <button
                 type="button"
                 className="btn-close"
@@ -372,7 +380,7 @@ export default function RecommendResearcher() {
         >
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">เพิ่มข้อมูลโครงการวิจัย</h5>
+              <h5 className="modal-title">เพิ่มข้อมูลธีมโครงการวิจัย</h5>
               <button
                 type="button"
                 className="btn-close"
@@ -383,7 +391,7 @@ export default function RecommendResearcher() {
             <div className="modal-body">
               <div className="mb-3">
                 <label className="form-label">
-                  ชื่อโครงการวิจัย<span className="text-danger">*</span>
+                  ชื่อธีมโครงการวิจัย<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
@@ -488,7 +496,7 @@ export default function RecommendResearcher() {
                     data-bs-toggle="modal"
                     data-bs-target="#modal-edit"
                   >
-                    <i className="fa fa-pen ms-2 me-2"></i>แก้ไขโครงการวิจัย
+                    <i className="fa fa-pen ms-2 me-2"></i>ลบธีมโครงการวิจัย
                   </button>
                   <button
                     href="#"
@@ -496,7 +504,7 @@ export default function RecommendResearcher() {
                     data-bs-toggle="modal"
                     data-bs-target="#modal-simple"
                   >
-                    <i className="fa fa-plus ms-2 me-2"></i>เพิ่มโครงการวิจัย
+                    <i className="fa fa-plus ms-2 me-2"></i>เพิ่มธีมโครงการวิจัย
                   </button>
                 </div>
               </div>
@@ -504,7 +512,7 @@ export default function RecommendResearcher() {
                 <div className="row">
                   <div className="col-md-12">
                     <div className="mb-3">
-                      <div className="form-label">ชื่อโครงการวิจัย</div>
+                      <div className="form-label">ชื่อธีมโครงการวิจัย</div>
                       <select
                         className="form-select"
                         onChange={_recommend}

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_position ,institution ,expertOf,id}) {
+export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_position ,institution ,expertOf,id,phone}) {
   console.log(id);
   return (
     <div className="card my-3 animate__animated  animate__fadeInRight">
@@ -11,7 +11,7 @@ export default function CardResearcher({ email, firstNameTH, lastNameTH,ac_posit
         <div className="row px-5">
           <div className="col-md-6">
             <p>
-              <b>เบอร์โทร</b> 0861350XXX
+              <b>เบอร์โทร</b> {phone || "ไม่มี"}
             </p>
             <p>
               <b>ตำแหน่งทางวิชาการ</b> {ac_position}

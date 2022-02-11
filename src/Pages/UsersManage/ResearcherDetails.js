@@ -10,6 +10,7 @@ export default function ReseacherDetails() {
   //   console.log(id);
   const fetchUser = () => {
     getUserById(id).then((result) => {
+      console.log(result.data);
       if (result.status === 200) {
         setUserData(result.data.data);
       }

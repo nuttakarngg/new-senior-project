@@ -3,13 +3,19 @@ import recommendSVG from "../Assets/images/undraw_Choose_re_7d5a.svg";
 import signinSVG from "../Assets/images/undraw_Pie_chart_re_bgs8.svg";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../authentication/auth-context";
 
 export default function HomePage() {
   const dispatch = useDispatch();
-  const { hasLogin } = useAuth();
-
+  const { hasLogin, user } = useAuth();
+  const [userData, setUserData] = useState({});
+  useEffect(() => {
+    setUser();
+  }, []);
+  const setUser = async () => {
+    setUserData((await user()).data.data);
+  };
   useEffect(() => {
     dispatch({ type: "SET_DATA", payload: { navbar: ["/HomePage"] } });
   });
@@ -39,7 +45,7 @@ export default function HomePage() {
         </div>
       </div>
       <div className="row">
-        <div className="col-xl-4 col-sm-12 my-3 d-flex align-items-stretch">
+        <div className="col-xl col-sm-12 my-3 d-flex align-items-stretch">
           <div className="card w-100 animate__animated animate__fadeInDown animate__delay-1s">
             <div className="empty">
               <div className="empty-img">
@@ -62,7 +68,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-sm-12 my-3 d-flex align-items-stretch">
+        <div className="col-xl col-sm-12 my-3 d-flex align-items-stretch">
           <div className="card w-100 animate__animated animate__fadeInDown animate__delay-2s">
             <div className="empty">
               <div className="empty-img">
@@ -85,34 +91,40 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-sm-12 my-3 d-flex align-items-stretch">
-          <div className="card w-100 animate__animated animate__fadeInDown animate__delay-3s">
-            <div className="empty">
-              <div className="empty-img">
-                <img src={signinSVG} height="128" alt="" />
-              </div>
-              <p className="empty-title">นำเสนอผู้บริหาร</p>
-              <p className="empty-subtitle text-muted">
-                เข้าสู่ระบบเพื่อจัดการข้อมูล เรียกดูข้อมูล
-                หรือเพื่อนำเสนอข้อมูลแก่ผู้บริหาร
-              </p>
-              <div className="empty-action">
-                {hasLogin ? (
-                  <Link to="/Presents/RankingPerYear" className="btn btn-primary">
-                  {/* <Link to="/Presents/Dashboard" className="btn btn-primary"> */}
-                    <i className="fas fa-sign-in-alt me-2" />
-                    กระดานข้อมูล
-                  </Link>
-                ) : (
-                  <Link to="/login" className="btn btn-primary">
-                    <i className="fas fa-sign-in-alt me-2" />
-                    เข้าสู่ระบบ
-                  </Link>
-                )}
+        {userData?.roles?.find((i) => i.id == 4) && (
+          <div className="col-xl col-sm-12 my-3 d-flex align-items-stretch">
+            <div className="card w-100 animate__animated animate__fadeInDown animate__delay-3s">
+              <div className="empty">
+                <div className="empty-img">
+                  <img src={signinSVG} height="128" alt="" />
+                </div>
+                <p className="empty-title">นำเสนอผู้บริหาร</p>
+                <p className="empty-subtitle text-muted">
+                  เข้าสู่ระบบเพื่อจัดการข้อมูล เรียกดูข้อมูล
+                  หรือเพื่อนำเสนอข้อมูลแก่ผู้บริหาร
+                </p>
+                {/* {userData.data.roles.id == 4 && */}
+                <div className="empty-action">
+                  {hasLogin ? (
+                    <Link
+                      to="/Presents/RankingPerYear"
+                      className="btn btn-primary"
+                    >
+                      {/* <Link to="/Presents/Dashboard" className="btn btn-primary"> */}
+                      <i className="fas fa-sign-in-alt me-2" />
+                      กระดานข้อมูล
+                    </Link>
+                  ) : (
+                    <Link to="/login" className="btn btn-primary">
+                      <i className="fas fa-sign-in-alt me-2" />
+                      เข้าสู่ระบบ
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="row">
         <p></p>
