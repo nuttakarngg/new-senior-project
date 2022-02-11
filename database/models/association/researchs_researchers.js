@@ -11,6 +11,7 @@ const Researchs_Researchers = sequelize.define(
     },
     gtype: {
       type: DataTypes.STRING,
+      defaultValue: "หัวหน้าโครงการวิจัย",
     },
   },
   { timestamps: false }

@@ -56,11 +56,11 @@ Research.init(
     },
     researchStartDate: {
       allowNull: true,
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     researchEnddate: {
       allowNull: true,
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     researchType: {
       type: DataTypes.STRING,
@@ -68,7 +68,7 @@ Research.init(
     },
     researchContractDateSign: {
       allowNull: true,
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     researchStatus: {
       type: DataTypes.STRING,

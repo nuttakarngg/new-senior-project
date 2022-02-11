@@ -9,7 +9,7 @@ const { decode } = require("jsonwebtoken");
 const { Branch } = require("../database/models/user");
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
-router.use(authentication);
+// router.use(authentication);
 router.get("/", async (request, response) => {
   try {
     const keyword = request.query.keyword;
@@ -51,7 +51,7 @@ router.get("/:id", async (request, response) => {
   }
 });
 
-router.put("/editProfile/", async (request, response) => {
+router.put("/editProfile/",authentication, async (request, response) => {
   try {
     const requestUser = request.user;
     const user = await User.update(request.body, {
@@ -66,7 +66,7 @@ router.put("/editProfile/", async (request, response) => {
   }
 });
 
-router.put("/:id", async (request, response) => {
+router.put("/:id",authentication, async (request, response) => {
   try {
     const { roles } = request.user;
     const hasRole = roles.map((item) => item.name);

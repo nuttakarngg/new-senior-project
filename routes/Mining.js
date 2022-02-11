@@ -18,7 +18,6 @@ router.get("/createData", async function (req, res, next) {
         //  call a 3s setTimeout when the loop is called
         let item = research[i];
         let text = item.researchNameTH + " " + item.researchScholarName;
-        console.log("hello"); //  your code here
         i++; //  increment the counter
         if (i < research.length) {
           //  if the counter < 10, call the loop function
@@ -83,23 +82,25 @@ router.get("/ranking", async function (req, res, next) {
     });
     Promise.all(promises).then((result) => {
       result.forEach((item, idx) => {
-        if(!item[0]) return null;
-          let rules = item[0].length;
-          let rulesMatch = item[0].filter((fitem) =>
-            fitem["2"]
-              .replace(" ", "")
-              .split(",")
-              .some((item) => item === req.query.type)
-          ).length;
-          delete userId[idx].research;
-          responseResult.push({
-            user: userId[idx],
-            rules,
-            rulesMatch,
-            percent: parseFloat(((rulesMatch / rules) * 100).toFixed(2)),
-          });
+        if (!item[0]) return null;
+        let rules = item[0].length;
+        let rulesMatch = item[0].filter((fitem) =>
+          fitem["2"]
+            .replace(" ", "")
+            .split(",")
+            .some((item) => item === req.query.type)
+        ).length;
+        delete userId[idx].research;
+        responseResult.push({
+          user: userId[idx],
+          rules,
+          rulesMatch,
+          percent: parseFloat(((rulesMatch / rules) * 100).toFixed(2)),
+        });
       });
-      return res.json(responseResult.sort((a, b) => b.percent - a.percent).splice(0,10));
+      return res.json(
+        responseResult.sort((a, b) => b.percent - a.percent).splice(0, 10)
+      );
     });
   } catch (e) {
     console.log(e);
@@ -110,7 +111,7 @@ router.get("/getRules/:id", async function (req, res, next) {
   try {
     axios
       .get(
-        "http://desktop-qvfspo5:8080/api/rest/process/fp-growth?userId=" +
+        "http://20.185.148.204:8080/api/rest/process/fp-growth?userId=" +
           req.params.id,
         {
           headers: {

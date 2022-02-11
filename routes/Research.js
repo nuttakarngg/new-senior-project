@@ -76,14 +76,16 @@ router.get("/", async (request, response) => {
     });
   }
 });
-router.post("/", authentication, (request, response) => {
+router.post("/", authentication, async (request, response) => {
   try {
     const research = request.body;
     console.log(request.user);
-    let result = Research.create({
+    let result = await Research.create({
       ...research,
       // researcherId: request.user.id,
     });
+    console.log(result);
+    result.addUser([request.user.id]);
     return response.status(200).json({
       status: 200,
       data: result,
@@ -107,8 +109,9 @@ router.get("/getResearchById/:id", async (request, response) => {
           {
             model: User,
             where: {
-              id: request.params.id,
+              id,
             },
+            required:true
           },
         ],
         // order:

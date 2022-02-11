@@ -30,7 +30,7 @@ router.post("/", (request, response) => {
   let mailOptions = {
     from: "no-reply", // sender
     to: "nuttakarngg@gmail.com", // list of receivers
-    subject: "แบบ", // Mail subject
+    subject: "แบบเชิญชวญร่วมทำงานวิจัย", // Mail subject
     html: request.body.mailTemplate, // HTML body
     attachments: request.body.fileSelect.map((item) => ({
       // utf-8 string as an attachment
