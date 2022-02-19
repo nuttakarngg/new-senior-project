@@ -333,14 +333,7 @@ export default function RecommendResearcher() {
               <div className="row p-3">
                 <div className="d-flex gap-2">
                   <h3>ไฟล์ที่ต้องการแนบ</h3>
-                  {/* <span
-                    className="btn btn-success inline"
-                    onClick={() => {
-                      console.log("add");
-                    }}
-                  >
-                    <i className="fas fa-plus" />
-                  </span> */}
+        
                 </div>
                 {/* <div className="border-1 p-3">
                   <input type="file"/>

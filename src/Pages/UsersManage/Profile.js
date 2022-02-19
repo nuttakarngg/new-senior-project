@@ -69,6 +69,18 @@ export default function Profile() {
     }
   }
   const updateUser = (user, callback) => {
+    const Keys = Object.keys(user);
+    let hasError = false;
+    Keys.map(item=>{
+      if(user[item]==""){
+        hasError = true;
+        
+      }
+    })
+    if(hasError){
+      toast.error('กรุณากรอกข้อมูลให้ครบถ้วน');
+      return null;
+    }
     editProfile(user).then((result) => {
       if (result.status === 200) {
         callback();
@@ -934,7 +946,7 @@ export default function Profile() {
                   <div className="row">
                     <div className="col-4">
                       <div className="mb-3">
-                        <label className="form-label">วันที่เริ่มวัจัย</label>
+                        <label className="form-label">วันที่เริ่มวิจัย</label>
                         <input
                           type="date"
                           {...register("researchStartDate", {

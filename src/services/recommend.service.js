@@ -15,7 +15,6 @@ export const classify = async (id) => {
 
 export const ranking = async (label) => {
   console.log(label);
-  return authication().then(async () => {
     return await axios.get(`http://localhost:3001/api/mining/ranking`, {
       params: {
         // type: 'การวิจัยพื้นฐาน',
@@ -25,5 +24,4 @@ export const ranking = async (label) => {
         // token
       },
     });
-  });
 };

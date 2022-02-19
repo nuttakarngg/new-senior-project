@@ -48,6 +48,18 @@ export default function ReseachDetails() {
 
   const updateResearch = (research, callback) => {
     // console.log(research);
+    const Keys = Object.keys(research);
+    let hasError = false;
+    Keys.map(item=>{
+      if(research[item]==""){
+        hasError = true;
+        
+      }
+    })
+    if(hasError){
+      toast.error('กรุณากรอกข้อมูลให้ครบถ้วน');
+      return null;
+    }
     editResearch(research, research.id).then((result) => {
       // console.log(result.data);
       if (result.status === 200) {
